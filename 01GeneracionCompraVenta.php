@@ -8,7 +8,7 @@ require_once __DIR__ . '/datos_generales.php';
 
 
 
-$siat = obtenerDatosSiat(0);
+$siat = obtenerDatosSiat(1);
 $codigoPuntoVenta = $siat['codigoPuntoVenta'];
 $codigoControl = $siat['codigoControl'];
 $cufd = $siat['cufd'];
@@ -21,7 +21,7 @@ $codigoModalidad = $siat['codigoModalidad'];
 //error_log("puntoVenta: " . $codigoPuntoVenta." cufd: ".$cufd." cuis: ".$cuis." token: ".$token." codigoAmbiente: ".$codigoAmbiente." codigoDocumentoSector: ".$codigoDocumentoSector." codigoEmision: ".$codigoEmision." codigoModalidad: ".$codigoModalidad);
 //error_log("codigoControl: $codigoControl");
 //exit();
-$cantidad=1;
+$cantidad=150;
 
 $codigoSistema = $siat['codigoSistema'];
 $codigoSucursal = $siat['codigoSucursal'];
@@ -49,7 +49,91 @@ deleteFile();
 //     * @param nf Numero de Factura
 //     * @param pos Punto de Venta
 
+/*
+ * Operaciones a ejecutar por factura. Cada una es una llamada SOAP (~0.33 s),
+ * asi que apagar las que no necesites multiplica la velocidad:
+ *   solo recepcion        -> ~0.33 s por factura
+ *   las tres (por defecto) -> ~1.00 s por factura
+ */
+$hacerAnulacion = true;
+$hacerReversion = true;
+
+// El SIAT a veces responde codigoEstado -1 "Request timeout ... after 45000 ms".
+// Cortamos antes y reintentamos, en vez de perder 46 s esperando.
+ini_set('default_socket_timeout', '10');
+$reintentos = 2;
+
+/*
+ * El cliente SOAP se crea UNA sola vez: antes se instanciaba dentro del bucle
+ * y eso volvia a descargar y parsear el WSDL (~0.11 s) en cada factura.
+ */
+function crearClienteSiat(string $token): SoapClient
+{
+    return new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
+        'stream_context' => stream_context_create([
+            'http' => [
+                // Connection: close evita el keep-alive. Reutilizar la conexion
+                // hacia el SIAT provoca "Error Fetching http headers" y cada uno
+                // de esos se come el socket_timeout completo esperando.
+                'header' => "apikey: TokenApi " . $token . "
+Connection: close",
+                'timeout' => 10,
+            ]
+        ]),
+        'cache_wsdl' => WSDL_CACHE_DISK,
+        'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | SOAP_COMPRESSION_DEFLATE,
+        'trace' => 0,
+        'use' => SOAP_LITERAL,
+        'style' => SOAP_DOCUMENT,
+        'connection_timeout' => 10,
+    ]);
+}
+
+$client = crearClienteSiat($token);
+
+/**
+ * Ejecuta una operacion del SIAT reintentando cuando devuelve codigoEstado -1
+ * (timeout interno del SIAT) o cuando revienta la conexion.
+ */
+function llamarSiat(SoapClient &$client, string $operacion, array $datos, int $reintentos, string $token)
+{
+    for ($intento = 0; $intento <= $reintentos; $intento++) {
+        try {
+            $t0 = microtime(true);
+            $result = $client->$operacion($datos);
+            if (getenv('SIAT_DEBUG')) { printf("      %-28s %.2f s
+", $operacion, microtime(true)-$t0); }
+        } catch (Throwable $e) {
+            $perdido = microtime(true) - $t0;
+            if ($intento === $reintentos) { return null; }
+            printf("    ! %s fallo tras %.1f s (%s), reintento %d" . PHP_EOL,
+                $operacion, $perdido, $e->getMessage(), $intento + 1);
+            // "Error Fetching http headers" = el SIAT cerro la conexion keep-alive;
+            // el cliente queda inservible y hay que rearmarlo.
+            $client = crearClienteSiat($token);
+            continue;
+        }
+
+        $r = $result->RespuestaServicioFacturacion ?? null;
+        if (($r->codigoEstado ?? 0) !== -1) {
+            return $result;
+        }
+        if ($intento < $reintentos) {
+            echo "    ! $operacion devolvio timeout del SIAT, reintento " . ($intento + 1) . PHP_EOL;
+        }
+    }
+    return $result ?? null;
+}
+
+$inicio = microtime(true);
+$validadas = 0;
+$rechazadas = 0;
+$anuladas = 0;
+$revertidas = 0;
+
 for ($i=1;$i<=$cantidad;$i++){
+    $numeroFactura = $i;   // antes iba fijo en 1 para las 125 facturas
+    $nf = $i;
     $miliSegundo=str_pad($i, 3, '0', STR_PAD_LEFT);
     $fechaEnvio=date("Y-m-d\TH:i:s").".$miliSegundo";
     $cuf = new CUF();
@@ -63,7 +147,7 @@ for ($i=1;$i<=$cantidad;$i++){
         <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
         <municipio>$municipio</municipio>
         $telefonoEmisor
-        <numeroFactura>1</numeroFactura>
+        <numeroFactura>$numeroFactura</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>$codigoSucursal</codigoSucursal>
@@ -112,7 +196,7 @@ for ($i=1;$i<=$cantidad;$i++){
         <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
         <municipio>$municipio</municipio>
         $telefonoEmisor
-        <numeroFactura>1</numeroFactura>
+        <numeroFactura>$numeroFactura</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>$codigoSucursal</codigoSucursal>
@@ -183,19 +267,7 @@ for ($i=1;$i<=$cantidad;$i++){
     $archivo=getFileGzip("archivos/".$nameFile.'.xml'.'.gz');
     $hashArchivo=hash('sha256', $archivo);
 
-    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
-        'stream_context' => stream_context_create([
-            'http' => [
-                'header' => "apikey: TokenApi " . $token,
-            ]
-        ]),
-        'cache_wsdl' => WSDL_CACHE_NONE,
-        'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | SOAP_COMPRESSION_DEFLATE,
-        'trace' => 1,
-        'use' => SOAP_LITERAL,
-        'style' => SOAP_DOCUMENT,
-    ]);
-    $result= $client->recepcionFactura([
+    $result = llamarSiat($client, 'recepcionFactura', [
         "SolicitudServicioRecepcionFactura"=>[
             "codigoAmbiente"=>$codigoAmbiente,
             "codigoDocumentoSector"=>$codigoDocumentoSector,
@@ -212,11 +284,19 @@ for ($i=1;$i<=$cantidad;$i++){
             "fechaEnvio"=>$fechaEnvio,
             "hashArchivo"=>$hashArchivo,
         ]
-    ]);
-    var_dump($result);
-//    exit();
-//    sleep(1);
-    $result= $client->anulacionFactura([
+    ], $reintentos, $token);
+    $r = $result->RespuestaServicioFacturacion ?? null;
+    $estado = $r->codigoDescripcion ?? 'SIN RESPUESTA';
+    if (($r->codigoEstado ?? 0) === 908) {
+        $validadas++;
+    } else {
+        $rechazadas++;
+        $msg = $r->mensajesList->descripcion ?? json_encode($r);
+        echo "  [$i/$cantidad] factura $numeroFactura: $estado - $msg" . PHP_EOL;
+    }
+
+    if ($hacerAnulacion) {
+    $result = llamarSiat($client, 'anulacionFactura', [
         "SolicitudServicioAnulacionFactura"=>[
             "codigoAmbiente"=>$codigoAmbiente,
             "codigoDocumentoSector"=>$codigoDocumentoSector,
@@ -232,28 +312,47 @@ for ($i=1;$i<=$cantidad;$i++){
             "codigoMotivo"=>"1",
             "cuf"=>$cuf,
         ]
-    ]);
-    var_dump($result);
-//    exit();
-//    $result= $client->reversionAnulacionFactura([
-//        "SolicitudServicioReversionAnulacionFactura"=>[
-//            "codigoAmbiente"=>$codigoAmbiente,
-//            "codigoDocumentoSector"=>$codigoDocumentoSector,
-//            "codigoEmision"=>$codigoEmision,
-//            "codigoModalidad"=>$codigoModalidad,
-//            "codigoPuntoVenta"=>$codigoPuntoVenta,
-//            "codigoSistema"=>$codigoSistema,
-//            "codigoSucursal"=>$codigoSucursal,
-//            "cufd"=>$cufd,
-//            "cuis"=>$cuis,
-//            "nit"=>$nit,
-//            "tipoFacturaDocumento"=>$tipoFacturaDocumento,
-//            "cuf"=>$cuf,
-//        ]
-//    ]);
-//    var_dump($result);
-//    exit();
+    ], $reintentos, $token);
+    $anuladas += (($result->RespuestaServicioFacturacion->codigoEstado ?? 0) === 905) ? 1 : 0;
+    }
+
+    if ($hacerReversion) {
+    $result = llamarSiat($client, 'reversionAnulacionFactura', [
+        "SolicitudServicioReversionAnulacionFactura"=>[
+            "codigoAmbiente"=>$codigoAmbiente,
+            "codigoDocumentoSector"=>$codigoDocumentoSector,
+            "codigoEmision"=>$codigoEmision,
+            "codigoModalidad"=>$codigoModalidad,
+            "codigoPuntoVenta"=>$codigoPuntoVenta,
+            "codigoSistema"=>$codigoSistema,
+            "codigoSucursal"=>$codigoSucursal,
+            "cufd"=>$cufd,
+            "cuis"=>$cuis,
+            "nit"=>$nit,
+            "tipoFacturaDocumento"=>$tipoFacturaDocumento,
+            "cuf"=>$cuf,
+        ]
+    ], $reintentos, $token);
+    $revertidas += (($result->RespuestaServicioFacturacion->codigoEstado ?? 0) === 907) ? 1 : 0;
+    }
+
+    // progreso cada 10 facturas, con la velocidad real medida
+    if ($i % 10 === 0 || $i === $cantidad) {
+        $transcurrido = microtime(true) - $inicio;
+        printf(
+            "  %d/%d  validadas=%d anuladas=%d revertidas=%d rechazadas=%d  %.2f s/factura  (faltan ~%.0f s)" . PHP_EOL,
+            $i, $cantidad, $validadas, $anuladas, $revertidas, $rechazadas,
+            $transcurrido / $i,
+            ($cantidad - $i) * ($transcurrido / $i)
+        );
+    }
 }
+
+$total = microtime(true) - $inicio;
+printf(
+    PHP_EOL . "Listo: %d facturas en %.1f s (%.2f s por factura) | validadas=%d anuladas=%d revertidas=%d rechazadas=%d" . PHP_EOL,
+    $cantidad, $total, $total / max($cantidad, 1), $validadas, $anuladas, $revertidas, $rechazadas
+);
 
 
 

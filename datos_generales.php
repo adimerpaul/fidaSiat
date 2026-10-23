@@ -90,8 +90,8 @@ function obtenerEmpresaSiat(?string $empresa = null): array
                 // PDV 0 = el propio de la sucursal 0, existe sin registrarlo.
                 0 => [
                     'cuis' => '1096986F',
-                    'cufd' => 'UFBQVVDKUpNQU4MjhFQ0M1Q0VFQkFha1VMWUthVE=OEQ3RkYzMTE',
-                    'codigoControl' => '54AFF06D0B4BF74',
+                    'cufd' => 'VVBQUFVQylKTU4MjhFQ0M1Q0VFQsKhTUZ0T1lLYFBOEQ3RkYzMTE',
+                    'codigoControl' => '372F605F0B4BF74',
                 ],
                 // PDV 1: hay que registrarlo antes con registroPuntoVenta
                 // (ver el comentario al final de GenerateCui.php).
