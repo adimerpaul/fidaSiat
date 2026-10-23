@@ -4,23 +4,18 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
 require 'vendor/autoload.php';
 
 require 'CUF.php';
+require_once __DIR__ . '/datos_generales.php';
 
 
 
-date_default_timezone_set('America/La_Paz');
-$cuis1="1D464E1F";
-$codigo1="BQXlDcClvQUE=NzzlFN0MwMUIwRjY=QnloV1RWUURYVUJcwNDEwNkJCMEYwQ";
-$codigoControl1="9F9B96EF4D5FD74"; //2023-03-01T16:56:05.359-04:00
 
-$cuis0="10FE2652";
-$codigo0="BQWVDd15nQUE=NzDRCMTBDQkZBREU=QlVKWUdKRElYVUFIxRDQ0NDQwMEFFM";
-$codigoControl0="8C54022CAECFD74"; //2023-03-01T16:55:06.383-04:00
 
 //3573986
-$codigoPuntoVenta=0;
-$codigoControl=$codigoControl0;
-$cufd=$codigo0;
-$cuis=$cuis0;
+$siat = obtenerDatosSiat(0);
+$codigoPuntoVenta = $siat['codigoPuntoVenta'];
+$codigoControl = $siat['codigoControl'];
+$cufd = $siat['cufd'];
+$cuis = $siat['cuis'];
 
 //$codigoEvento=3629231;
 
@@ -31,16 +26,16 @@ $s="19";
 //$s2=(int)$s+1;
 $cantidad=500;
 
-$token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNVUxUSVNBTEFTIiwiY29kaWdvU2lzdGVtYSI6IjcyMUQ0NDQ0MDBBRTA0QjEwQ0JGQURFIiwibml0IjoiSDRzSUFBQUFBQUFBQURNMnNqUXhzVEF3TWdZQWZBZTRnd2tBQUFBPSIsImlkIjo1NzEwMTgsImV4cCI6MTcwMDE3OTIwMCwiaWF0IjoxNjY4NzI0Nzg1LCJuaXREZWxlZ2FkbyI6MzI5NDQ4MDIzLCJzdWJzaXN0ZW1hIjoiU0ZFIn0.RwT_VeslNjLkKQuBoNBgXYaUl3Sq5gU5Co8yW7jxUEHp2JaX8olKZJKSl8C_bKIyILO13Uy8mK2LepVU7zwpNw";
-$codigoAmbiente="1";
+$token = $siat['token'];
+$codigoAmbiente = $siat['codigoAmbiente'];
 $codigoDocumentoSector=2; //1 compra venta, 13 servicios basicos, 24 nota credito debito, 29 nota conciliacion
 $codigoEmision=2;//1 online, 2 offline, 3 masiva
-$codigoModalidad=1;
+$codigoModalidad = $siat['codigoModalidad'];
 
-$codigoSistema="721D444400AE04B10CBFADE";
-$codigoSucursal=0;
+$codigoSistema = $siat['codigoSistema'];
+$codigoSucursal = $siat['codigoSucursal'];
 
-$nit="329448023";
+$nit = $siat['nit'];
 $tipoFacturaDocumento=1; //1 credito 2 sin creditos 3 nota credito debito
 
 
@@ -58,7 +53,7 @@ $nf=1;
 //     * @param nf Numero de Factura
 //     * @param pos Punto de Venta
 
-$client = new \SoapClient("https://siatrest.impuestos.gob.bo/v2/FacturacionOperaciones?WSDL",  [
+$client = new \SoapClient(obtenerUrlSiat('FacturacionOperaciones'),  [
     'stream_context' => stream_context_create([
         'http' => [
             'header' => "apikey: TokenApi " . $token,
@@ -129,7 +124,7 @@ $codigoEvento=$result->RespuestaListaEventos->codigoRecepcionEventoSignificativo
 //    $archivo=getFileGzip("archivos/".$nameFile.'.xml'.'.gz');
 //    $hashArchivo=hash('sha256', $archivo);
 //
-//    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionCompraVenta?WSDL",  [
+//    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
 //        'stream_context' => stream_context_create([
 //            'http' => [
 //                'header' => "apikey: TokenApi " . $token,
@@ -168,7 +163,7 @@ $archivo=getFileGzip("archivos/archive.tar.gz");
 $hashArchivo=hash('sha256', $archivo);
 $fechaEnvio=date('Y-m-d\TH:i:s.000');
 unlink("archivos/archive.tar.gz");
-$client = new \SoapClient("https://siatrest.impuestos.gob.bo/v2/ServicioFacturacionElectronica?WSDL",  [
+$client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionElectronica'),  [
     'stream_context' => stream_context_create([
         'http' => [
             'header' => "apikey: TokenApi " . $token,

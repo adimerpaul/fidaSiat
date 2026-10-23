@@ -38,6 +38,10 @@ $codigoSistema = $siat['codigoSistema'];
 $codigoSucursal = $siat['codigoSucursal'];
 
 $nit = $siat['nit'];
+$razonSocialEmisor = $siat['razonSocial'];
+$municipio = $siat['municipio'];
+$direccion = $siat['direccion'];
+$telefonoEmisor = etiquetaTelefonoSiat($siat['telefono']);
 $tipoFacturaDocumento=1;
 
 
@@ -50,7 +54,7 @@ $cafc="10194129FA5C";
 
 for ($y=1;$y<=10;$y++){
     deleteFile();
-    $client = new SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionOperaciones?WSDL",  [
+    $client = new SoapClient(obtenerUrlSiat('FacturacionOperaciones'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,
@@ -95,14 +99,14 @@ for ($y=1;$y<=10;$y++){
 <facturaComputarizadaCompraVenta xsi:noNamespaceSchemaLocation='facturaComputarizadaCompraVenta.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <cabecera>
         <nitEmisor>$nit</nitEmisor>
-        <razonSocialEmisor>Carlos Loza</razonSocialEmisor>
-        <municipio>La Paz</municipio>
-        <telefono>78595684</telefono>
+        <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
+        <municipio>$municipio</municipio>
+        $telefonoEmisor
         <numeroFactura>1</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>$codigoSucursal</codigoSucursal>
-        <direccion>AV. JORGE LOPEZ #123</direccion>
+        <direccion>$direccion</direccion>
     <codigoPuntoVenta>$codigoPuntoVenta</codigoPuntoVenta>
         <fechaEmision>$fechaEnvio</fechaEmision>
         <nombreRazonSocial>Mi razon social</nombreRazonSocial>
@@ -165,7 +169,7 @@ for ($y=1;$y<=10;$y++){
     $archivo=getFileGzip($archiveName.".gz");
     $hashArchivo=hash('sha256', $archivo);
     $fechaEnvio=date('Y-m-d\TH:i:s.000');
-    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionCompraVenta?WSDL",  [
+    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,

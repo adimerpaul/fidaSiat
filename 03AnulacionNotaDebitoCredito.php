@@ -4,35 +4,34 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
 require 'vendor/autoload.php';
 
 require 'CUF.php';
+require_once __DIR__ . '/datos_generales.php';
 
 
 
-date_default_timezone_set('America/La_Paz');
-$cuis1="9A0F4C66";
-$codigo1="BQTlDTkVCQkE=NzjdEODFGRDM1NkU=QlVrYVpQZUhXVUJIwREU2OTlBMjJBR";
-$codigoControl1="4A185C3265A6D74";
-
-$cuis0="EB17D75E";
-$codigo0="BQUE5Q05FQkJBNzjdEODFGRDM1NkU=QsKhbUFTT2VIV1VIwREU2OTlBMjJBR";
-$codigoControl0="43CDA89165A6D74";
 
 
-$codigoPuntoVenta=1;
-$codigoControl=$codigoControl1;
-$cufd=$codigo1;
-$cuis=$cuis1;
+
+$siat = obtenerDatosSiat(1);
+$codigoPuntoVenta = $siat['codigoPuntoVenta'];
+$codigoControl = $siat['codigoControl'];
+$cufd = $siat['cufd'];
+$cuis = $siat['cuis'];
 
 
-$token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJTRUxBX09SVTgzMSIsImNvZGlnb1Npc3RlbWEiOiI3MjBERTY5OUEyMkFGN0Q4MUZEMzU2RSIsIm5pdCI6Ikg0c0lBQUFBQUFBQUFETTBNRFF3TVRRMk1ESURBS2tRRzB3S0FBQUEiLCJpZCI6MjcyNjcsImV4cCI6MTY3MjQ0NDgwMCwiaWF0IjoxNjU1MTM1NzM2LCJuaXREZWxlZ2FkbyI6MTAxMDQxMzAyNiwic3Vic2lzdGVtYSI6IlNGRSJ9.dOFu7xY7ts0B6GVPKZ662HvdMBwElPfmxMs8hgrDpR9Y5aLsAkBvnvryfbp93D5XUq7ore0SQevztlxolFWxNA";
-$codigoAmbiente="2";
+$token = $siat['token'];
+$codigoAmbiente = $siat['codigoAmbiente'];
 $codigoDocumentoSector=24; //1 compra venta, 13 servicios basicos, 24 nota credito debito, 29 nota conciliacion
 $codigoEmision=1;
-$codigoModalidad=1;
+$codigoModalidad = $siat['codigoModalidad'];
 
-$codigoSistema="720DE699A22AF7D81FD356E";
-$codigoSucursal=0;
+$codigoSistema = $siat['codigoSistema'];
+$codigoSucursal = $siat['codigoSucursal'];
 
-$nit="1010413026";
+$nit = $siat['nit'];
+$razonSocialEmisor = $siat['razonSocial'];
+$municipio = $siat['municipio'];
+$direccion = $siat['direccion'];
+$telefonoEmisor = etiquetaTelefonoSiat($siat['telefono']);
 $tipoFacturaDocumento=3;
 
 
@@ -61,14 +60,14 @@ for ($i=1;$i<=125;$i++){
                                     xsi:noNamespaceSchemaLocation='notaElectronicaCreditoDebito.xsd'>
     <cabecera>
         <nitEmisor>$nit</nitEmisor>
-        <razonSocialEmisor>ENTEL</razonSocialEmisor>
-        <municipio>La Paz</municipio>
-        <telefono>2846005</telefono>
+        <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
+        <municipio>$municipio</municipio>
+        $telefonoEmisor
         <numeroNotaCreditoDebito>1</numeroNotaCreditoDebito>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>0</codigoSucursal>
-        <direccion>AV. JORGE LOPEZ #123</direccion>
+        <direccion>$direccion</direccion>
         <codigoPuntoVenta>$codigoPuntoVenta</codigoPuntoVenta>
         <fechaEmision>$fechaEnvio</fechaEmision>
         <nombreRazonSocial>Juan Valdez</nombreRazonSocial>
@@ -142,7 +141,7 @@ for ($i=1;$i<=125;$i++){
     $archivo=getFileGzip("archivos/".$nameFile.'.xml'.'.gz');
     $hashArchivo=hash('sha256', $archivo);
 
-    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionDocumentoAjuste?wsdl",  [
+    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionDocumentoAjuste'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,

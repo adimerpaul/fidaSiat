@@ -14,7 +14,7 @@ $codigoSucursal = $siat['codigoSucursal'];
 $contador = 125;
 
 for ($i=0; $i < $contador; $i++) {
-    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionSincronizacion?WSDL",  [
+    $client = new \SoapClient(obtenerUrlSiat('FacturacionSincronizacion'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,

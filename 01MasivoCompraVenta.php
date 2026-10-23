@@ -4,35 +4,34 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
 require 'vendor/autoload.php';
 
 require 'CUF.php';
+require_once __DIR__ . '/datos_generales.php';
 
 
 
-date_default_timezone_set('America/La_Paz');
-$cuis1="2D6B1652";
-$codigo1="BQTlCX3Z9RkE=ODzI5NjBGODkzRDY=QmVBdW1GT0NaVUJE1QjZCRTdERTE1N";
-$codigoControl1="23F153B32671F74"; //2023-03-01T16:56:05.359-04:00
-
-$cuis0="7B1208C5";
-$codigo0="BQTlCX3Z9RkE=ODzI5NjBGODkzRDY=Qm9xRmlGT0NaVUFE1QjZCRTdERTE1N";
-$codigoControl0="30F89CA32671F74"; //2023-03-01T16:55:06.383-04:00
 
 
-$codigoPuntoVenta=1;
-$codigoControl=$codigoControl1;
-$cufd=$codigo1;
-$cuis=$cuis1;
+
+$siat = obtenerDatosSiat(1);
+$codigoPuntoVenta = $siat['codigoPuntoVenta'];
+$codigoControl = $siat['codigoControl'];
+$cufd = $siat['cufd'];
+$cuis = $siat['cuis'];
 
 
-$token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmYXJtYWNpYWRpdmluYXByb3ZpZGVuY2lhMTJAZ21haWwuY29tIiwiY29kaWdvU2lzdGVtYSI6IjgxNUI2QkU3REUxNTcyOTYwRjg5M0Q2Iiwibml0IjoiSDRzSUFBQUFBQUFBQURNMU56RXh0N0EwTURRREFCVlVLbElLQUFBQSIsImlkIjo1MjA2ODg2LCJleHAiOjE3NjcxNTc2MjIsImlhdCI6MTczOTQzNzU5Niwibml0RGVsZWdhZG8iOjU3NDQ3ODkwMTYsInN1YnNpc3RlbWEiOiJTRkUifQ.iIEf2bnahqH3QhBnp18y7Ojjufz8R5-MmANYJ1vkIHAqNgR1aqFPFcPRM73e0bsZI3uKIZ0z3x5O77CxSqD8Ag";
-$codigoAmbiente="2";
+$token = $siat['token'];
+$codigoAmbiente = $siat['codigoAmbiente'];
 $codigoDocumentoSector=1; //1 compra venta, 13 servicios basicos, 24 nota credito debito, 29 nota conciliacion
 $codigoEmision=3;//1 online, 2 offline, 3 masiva
-$codigoModalidad=1;
+$codigoModalidad = $siat['codigoModalidad'];
 
-$codigoSistema="815B6BE7DE1572960F893D6";
-$codigoSucursal=0;
+$codigoSistema = $siat['codigoSistema'];
+$codigoSucursal = $siat['codigoSucursal'];
 
-$nit="5744789016";
+$nit = $siat['nit'];
+$razonSocialEmisor = $siat['razonSocial'];
+$municipio = $siat['municipio'];
+$direccion = $siat['direccion'];
+$telefonoEmisor = etiquetaTelefonoSiat($siat['telefono']);
 $tipoFacturaDocumento=1;
 
 
@@ -62,15 +61,15 @@ for ($i=1;$i<=1000;$i++){
     $cuf=$cuf.$codigoControl;
     $xml = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <facturaElectronicaCompraVenta xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='facturaElectronicaCompraVenta.xsd'>    <cabecera>
-        <nitEmisor>1010413026</nitEmisor>
-        <razonSocialEmisor>Carlos Loza</razonSocialEmisor>
-        <municipio>La Paz</municipio>
-        <telefono>2846005</telefono>
+        <nitEmisor>$nit</nitEmisor>
+        <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
+        <municipio>$municipio</municipio>
+        $telefonoEmisor
         <numeroFactura>1</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>0</codigoSucursal>
-        <direccion>AV. JORGE LOPEZ #123</direccion>
+        <direccion>$direccion</direccion>
         <codigoPuntoVenta>$codigoPuntoVenta</codigoPuntoVenta>
         <fechaEmision>$fechaEnvio</fechaEmision>
         <nombreRazonSocial>Mi razon social</nombreRazonSocial>
@@ -137,7 +136,7 @@ for ($i=1;$i<=1000;$i++){
 //    $archivo=getFileGzip("archivos/".$nameFile.'.xml'.'.gz');
 //    $hashArchivo=hash('sha256', $archivo);
 //
-//    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionCompraVenta?WSDL",  [
+//    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
 //        'stream_context' => stream_context_create([
 //            'http' => [
 //                'header' => "apikey: TokenApi " . $token,
@@ -173,7 +172,7 @@ createZip();
 $archivo=getFileGzip("archivos/archive.tar.gz");
 $hashArchivo=hash('sha256', $archivo);
 $fechaEnvio=date('Y-m-d\TH:i:s.000');
-$client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionCompraVenta?WSDL",  [
+$client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
     'stream_context' => stream_context_create([
         'http' => [
             'header' => "apikey: TokenApi " . $token,

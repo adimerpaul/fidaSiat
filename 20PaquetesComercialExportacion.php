@@ -4,23 +4,18 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
 require 'vendor/autoload.php';
 
 require 'CUF.php';
+require_once __DIR__ . '/datos_generales.php';
 
 
 
-date_default_timezone_set('America/La_Paz');
-$cuis1="1FC1D49F";
-$codigo1="BQVVDLElsQUE=N0kQ0QUU3RDJDRkU=Qj40dDVIY0JZVUJMyMzNCRUE0MjEwQ";
-$codigoControl1="56787D80D948E74"; //2023-03-01T16:56:05.359-04:00
 
-$cuis0="7EE6BD16";
-$codigo0="BQVVDLElsQUE=N0kQ0QUU3RDJDRkU=QnwzQUxJY0JZVUFMyMzNCRUE0MjEwQ";
-$codigoControl0="1505B0E0D948E74"; //2023-03-01T16:55:06.383-04:00
 
 //3573986
-$codigoPuntoVenta=0;
-$codigoControl=$codigoControl0;
-$cufd=$codigo0;
-$cuis=$cuis0;
+$siat = obtenerDatosSiat(0);
+$codigoPuntoVenta = $siat['codigoPuntoVenta'];
+$codigoControl = $siat['codigoControl'];
+$cufd = $siat['cufd'];
+$cuis = $siat['cuis'];
 
 //$codigoEvento=3629231;
 
@@ -31,16 +26,20 @@ $s="00";
 //$s2=(int)$s+1;
 $cantidad=1;
 
-$token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWtvbWVrcCIsImNvZGlnb1Npc3RlbWEiOiI3QzIzM0JFQTQyMTBCRDRBRTdEMkNGRSIsIm5pdCI6Ikg0c0lBQUFBQUFBQUFETTJON0N3TURZd01nSUFKdGIwVEFrQUFBQT0iLCJpZCI6NzM5NjMyLCJleHAiOjE3MTQ0NzM0MjUsImlhdCI6MTcwNTUwMjE5NSwibml0RGVsZWdhZG8iOjM3MDg4MzAyMiwic3Vic2lzdGVtYSI6IlNGRSJ9.bFLqksfjpqdh_Mwf0Ehv6qgUe5xsWZ9ioi7DvnjuVn7lTbtzNuaAQz-529VV6Bsj0XQIjtkhFDAe2lZkMW65kw";
-$codigoAmbiente="2";
+$token = $siat['token'];
+$codigoAmbiente = $siat['codigoAmbiente'];
 $codigoDocumentoSector=20; //1 compra venta, 13 servicios basicos, 24 nota credito debito, 29 nota conciliacion
 $codigoEmision=2;//1 online, 2 offline, 3 masiva
-$codigoModalidad=1;
+$codigoModalidad = $siat['codigoModalidad'];
 
-$codigoSistema="7C233BEA4210BD4AE7D2CFE";
-$codigoSucursal=0;
+$codigoSistema = $siat['codigoSistema'];
+$codigoSucursal = $siat['codigoSucursal'];
 
-$nit="370883022";
+$nit = $siat['nit'];
+$razonSocialEmisor = $siat['razonSocial'];
+$municipio = $siat['municipio'];
+$direccion = $siat['direccion'];
+$telefonoEmisor = etiquetaTelefonoSiat($siat['telefono']);
 $tipoFacturaDocumento=2;//1 con credito 2 sin credito 3 nota
 
 
@@ -51,7 +50,7 @@ $nf=1;
 
 for ($y=1;$y<=30;$y++){
     deleteFile();
-    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionOperaciones?WSDL",  [
+    $client = new \SoapClient(obtenerUrlSiat('FacturacionOperaciones'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,
@@ -94,14 +93,14 @@ for ($y=1;$y<=30;$y++){
         $xml = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <facturaElectronicaComercialExportacionMinera xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='facturaElectronicaComercialExportacionMinera.xsd'>    <cabecera>
         <nitEmisor>$nit</nitEmisor>
-        <razonSocialEmisor>Carlos Loza</razonSocialEmisor>
-        <municipio>La Paz</municipio>
-        <telefono>2846225</telefono>
+        <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
+        <municipio>$municipio</municipio>
+        $telefonoEmisor
         <numeroFactura>1</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>0</codigoSucursal>
-        <direccion>AV. JORGE LOPEZ #123</direccion>
+        <direccion>$direccion</direccion>
         <codigoPuntoVenta>$codigoPuntoVenta</codigoPuntoVenta>
         <fechaEmision>$fechaEnvio</fechaEmision>
         <nombreRazonSocial>Qhawaq Mining Andina S.R.L.</nombreRazonSocial>
@@ -197,7 +196,7 @@ for ($y=1;$y<=30;$y++){
     $archivo=getFileGzip($archiveName.".gz");
     $hashArchivo=hash('sha256', $archivo);
     $fechaEnvio=date('Y-m-d\TH:i:s.000');
-    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionElectronica?WSDL",  [
+    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionElectronica'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,

@@ -78,15 +78,24 @@ function obtenerEmpresaSiat(?string $empresa = null): array
             'codigoSucursal' => 0,
             'codigoModalidad' => 1,  // 1 = ELECTRONICA EN LINEA
             // Datos del emisor que van en la <cabecera> de cada XML.
-            // TODO: confirmar telefono y direccion legal reales de SFIDA.
+            // Tomados de la respuesta CUFD del SIAT (sucursal 0):
+            // "ZONA: NORTE, AVENIDA: 6 DE OCTUBRE, NRO.: 5049, TELEFONO: 5279631-5279631"
             'municipio' => 'Oruro',
-            'telefono' => null,
-            'direccion' => 'ORURO',
+            'telefono' => '5279631',
+            'direccion' => 'ZONA: NORTE, AVENIDA: 6 DE OCTUBRE, NRO.: 5049',
             'puntosVenta' => [
                 // CUIS se obtiene una sola vez por punto de venta (GenerateCui.php).
                 // CUFD y codigoControl CADUCAN CADA 24 H: regenerar con GenerateCuf.php
                 // antes de emitir. Vacio = pendiente de generar.
+                // PDV 0 = el propio de la sucursal 0, existe sin registrarlo.
                 0 => [
+                    'cuis' => '1096986F',
+                    'cufd' => 'VVBQUFVQylKTU4MjhFQ0M1Q0VFQsKhJGR2SllLYFBOEQ3RkYzMTE',
+                    'codigoControl' => '7FABE85C0B4BF74',
+                ],
+                // PDV 1: hay que registrarlo antes con registroPuntoVenta
+                // (ver el comentario al final de GenerateCui.php).
+                1 => [
                     'cuis' => '',
                     'cufd' => '',
                     'codigoControl' => '',

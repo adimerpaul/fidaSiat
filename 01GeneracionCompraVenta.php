@@ -27,6 +27,10 @@ $codigoSistema = $siat['codigoSistema'];
 $codigoSucursal = $siat['codigoSucursal'];
 
 $nit = $siat['nit'];
+$razonSocialEmisor = $siat['razonSocial'];
+$municipio = $siat['municipio'];
+$direccion = $siat['direccion'];
+$telefonoEmisor = etiquetaTelefonoSiat($siat['telefono']);
 $tipoFacturaDocumento=1;//1 con credito 2 sin credito 3 nota
 
 
@@ -56,14 +60,14 @@ for ($i=1;$i<=$cantidad;$i++){
 <facturaElectronicaCompraVenta xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='facturaElectronicaCompraVenta.xsd'>
 <cabecera>
         <nitEmisor>$nit</nitEmisor>
-        <razonSocialEmisor>Carlos Loza</razonSocialEmisor>
-        <municipio>La Paz</municipio>
-        <telefono>2846005</telefono>
+        <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
+        <municipio>$municipio</municipio>
+        $telefonoEmisor
         <numeroFactura>1</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>$codigoSucursal</codigoSucursal>
-        <direccion>AV. JORGE LOPEZ #123</direccion>
+        <direccion>$direccion</direccion>
         <codigoPuntoVenta>$codigoPuntoVenta</codigoPuntoVenta>
         <fechaEmision>$fechaEnvio</fechaEmision>
         <nombreRazonSocial>Mi razon social</nombreRazonSocial>
@@ -82,9 +86,7 @@ for ($i=1;$i<=$cantidad;$i++){
         <descuentoAdicional>1</descuentoAdicional>
         <codigoExcepcion xsi:nil='true'/>
         <cafc xsi:nil='true'/>
-        <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los
-            servicios que utilices.
-        </leyenda>
+        <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los productos que consumes.</leyenda>
         <usuario>pperez</usuario>
         <codigoDocumentoSector>1</codigoDocumentoSector>
     </cabecera>
@@ -107,14 +109,14 @@ for ($i=1;$i<=$cantidad;$i++){
 <facturaComputarizadaCompraVenta xsi:noNamespaceSchemaLocation='facturaComputarizadaCompraVenta.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <cabecera>
         <nitEmisor>$nit</nitEmisor>
-        <razonSocialEmisor>Carlos Loza</razonSocialEmisor>
-        <municipio>La Paz</municipio>
-        <telefono>78595684</telefono>
+        <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
+        <municipio>$municipio</municipio>
+        $telefonoEmisor
         <numeroFactura>1</numeroFactura>
         <cuf>$cuf</cuf>
         <cufd>$cufd</cufd>
         <codigoSucursal>$codigoSucursal</codigoSucursal>
-        <direccion>AV. JORGE LOPEZ #123</direccion>
+        <direccion>$direccion</direccion>
     <codigoPuntoVenta>$codigoPuntoVenta</codigoPuntoVenta>
         <fechaEmision>$fechaEnvio</fechaEmision>
         <nombreRazonSocial>Mi razon social</nombreRazonSocial>
@@ -133,9 +135,7 @@ for ($i=1;$i<=$cantidad;$i++){
         <descuentoAdicional>1</descuentoAdicional>
         <codigoExcepcion xsi:nil='true'/>
         <cafc xsi:nil='true'/>
-        <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los
-            servicios que utilices.
-        </leyenda>
+        <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los productos que consumes.</leyenda>
         <usuario>pperez</usuario>
         <codigoDocumentoSector>1</codigoDocumentoSector>
     </cabecera>
@@ -183,7 +183,7 @@ for ($i=1;$i<=$cantidad;$i++){
     $archivo=getFileGzip("archivos/".$nameFile.'.xml'.'.gz');
     $hashArchivo=hash('sha256', $archivo);
 
-    $client = new \SoapClient("https://siatrest.impuestos.gob.bo/v2/ServicioFacturacionCompraVenta?WSDL",  [
+    $client = new \SoapClient(obtenerUrlSiat('ServicioFacturacionCompraVenta'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,

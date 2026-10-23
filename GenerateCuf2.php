@@ -15,7 +15,7 @@ $modalidad = $siat['codigoModalidad'];
 $contador = 1;
 
 for ($i=0; $i < $contador; $i++) {
-    $client = new \SoapClient("https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionCodigos?WSDL",  [
+    $client = new \SoapClient(obtenerUrlSiat('FacturacionCodigos'),  [
         'stream_context' => stream_context_create([
             'http' => [
                 'header' => "apikey: TokenApi " . $token,
