@@ -87,18 +87,27 @@ function obtenerEmpresaSiat(?string $empresa = null): array
                 // CUIS se obtiene una sola vez por punto de venta (GenerateCui.php).
                 // CUFD y codigoControl CADUCAN CADA 24 H: regenerar con GenerateCuf.php
                 // antes de emitir. Vacio = pendiente de generar.
+                //
+                // 'generado'  = cuando se pidio el CUFD a este sistema (hora local).
+                // 'vigencia'  = hasta cuando lo da por valido el SIAT (su respuesta).
+                // Usar estadoCufdSiat() para saber si todavia sirve.
+                //
                 // PDV 0 = el propio de la sucursal 0, existe sin registrarlo.
                 0 => [
                     'cuis' => '1096986F',
-                    'cufd' => 'VVBQUFVQylKTU4MjhFQ0M1Q0VFQsKhTUZ0T1lLYFBOEQ3RkYzMTE',
-                    'codigoControl' => '372F605F0B4BF74',
+                    'cufd' => 'UFBQVVDKUpNQU4MjhFQ0M1Q0VFQnxlV09QWUthVE=OEQ3RkYzMTE',
+                    'codigoControl' => '356BF9BF0B4BF74',
+                    'generado' => '2026-10-23 15:14:23',
+                    'vigencia' => '2026-10-24T15:14:22.309-04:00',
                 ],
                 // PDV 1: hay que registrarlo antes con registroPuntoVenta
                 // (ver el comentario al final de GenerateCui.php).
                 1 => [
                     'cuis' => 'B3F92607',
-                    'cufd' => 'UJBQVVDKUpNQU4MjhFQ0M1Q0VFQmVFM1VMWUthVE=OEQ3RkYzMTE',
-                    'codigoControl' => '0B15416D0B4BF74',
+                    'cufd' => 'UJBQVVDKUpNQU4MjhFQ0M1Q0VFQktKeVFQWUthVE=OEQ3RkYzMTE',
+                    'codigoControl' => '3B257DBF0B4BF74',
+                    'generado' => '2026-10-23 15:16:50',
+                    'vigencia' => '2026-10-24T15:16:50.091-04:00',
                 ],
             ],
         ],
@@ -206,6 +215,8 @@ function obtenerDatosSiat(int $codigoPuntoVenta, ?string $empresa = null): array
         'cuis' => $puntoVenta['cuis'],
         'cufd' => $puntoVenta['cufd'],
         'codigoControl' => $puntoVenta['codigoControl'],
+        'generado' => $puntoVenta['generado'] ?? '',
+        'vigencia' => $puntoVenta['vigencia'] ?? '',
     ];
 }
 
@@ -228,7 +239,8 @@ function guardarCufdSiat(
     string $cufd,
     string $codigoControl,
     ?string $cuis = null,
-    ?string $empresa = null
+    ?string $empresa = null,
+    ?string $vigencia = null
 ): void {
     $empresa = $empresa ?? SIAT_EMPRESA_ACTIVA;
     $archivo = __FILE__;
@@ -258,5 +270,57 @@ function guardarCufdSiat(
         1
     );
 
+    // Fecha/hora de generacion y vigencia, para saber de un vistazo si sirve.
+    if ($cufd !== '') {
+        $nuevo = preg_replace(
+            "/'generado' => '[^']*'/",
+            "'generado' => '" . date('Y-m-d H:i:s') . "'",
+            $nuevo,
+            1
+        );
+        if ($vigencia !== null && $vigencia !== '') {
+            $nuevo = preg_replace(
+                "/'vigencia' => '[^']*'/",
+                "'vigencia' => '" . $vigencia . "'",
+                $nuevo,
+                1
+            );
+        }
+    }
+
     file_put_contents($archivo, substr_replace($contenido, $nuevo, $inicioPdv, strlen($bloque)));
+}
+
+/**
+ * Dice si el CUFD del punto de venta todavia sirve, en texto legible.
+ * El CUFD dura 24 h, asi que conviene mirarlo antes de una tanda de pruebas.
+ */
+function estadoCufdSiat(int $codigoPuntoVenta = 0, ?string $empresa = null): string
+{
+    $datos = obtenerDatosSiat($codigoPuntoVenta, $empresa);
+
+    if ($datos['cufd'] === '') {
+        return "PDV $codigoPuntoVenta: sin CUFD. Ejecutar: php GenerateCuf.php $codigoPuntoVenta 1";
+    }
+
+    $generado = $datos['generado'] !== '' ? $datos['generado'] : '?';
+    $vigencia = $datos['vigencia'];
+
+    if ($vigencia === '') {
+        return "PDV $codigoPuntoVenta: CUFD generado $generado, vigencia desconocida (regenerar para saberlo)";
+    }
+
+    $vence = strtotime($vigencia);
+    $restante = $vence - time();
+
+    if ($restante <= 0) {
+        return "PDV $codigoPuntoVenta: CUFD VENCIDO el " . date('Y-m-d H:i:s', $vence)
+            . " (generado $generado). Ejecutar: php GenerateCuf.php $codigoPuntoVenta 1";
+    }
+
+    $horas = intdiv($restante, 3600);
+    $minutos = intdiv($restante % 3600, 60);
+
+    return "PDV $codigoPuntoVenta: CUFD vigente, generado $generado, vence "
+        . date('Y-m-d H:i:s', $vence) . " (quedan {$horas}h {$minutos}m)";
 }

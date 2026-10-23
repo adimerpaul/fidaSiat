@@ -84,7 +84,7 @@ for ($i = 1; $i <= $contador; $i++) {
 echo PHP_EOL . "PDV $codigoPuntoVenta - solicitudes: $contador | exitosas: $exitosas | fallidas: $fallidas" . PHP_EOL;
 
 if ($cufd !== null && $codigoControl !== null) {
-    guardarCufdSiat($codigoPuntoVenta, $cufd, $codigoControl);
+    guardarCufdSiat($codigoPuntoVenta, $cufd, $codigoControl, null, null, (string) $fechaVigencia);
     echo PHP_EOL . "Ultimo CUFD guardado en datos_generales.php (PDV $codigoPuntoVenta)." . PHP_EOL
         . "  cufd:          $cufd" . PHP_EOL
         . "  codigoControl: $codigoControl" . PHP_EOL

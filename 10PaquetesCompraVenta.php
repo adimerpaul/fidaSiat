@@ -16,10 +16,10 @@ $cufd = $siat['cufd'];
 $cuis = $siat['cuis'];
 
 
-$cantidad=500;
-$codigoMotivoEvento=7;
-$h="05";
-$m="14";
+$cantidad=1;
+$codigoMotivoEvento=1;
+$h="15";
+$m="17";
 $s="00";
 
 //$codigoEvento=3629231;
@@ -50,7 +50,7 @@ $tipoFacturaDocumento=1;
 //$temision=1; //1 online, 2 offline, 3 masiva
 $cdf=1; // 1 con credito fiscal 2 sin credito fiscal 3 nota credito debito
 $nf=1;
-$cafc="10194129FA5C";
+//$cafc="10194129FA5C";
 
 for ($y=1;$y<=10;$y++){
     deleteFile();
@@ -124,7 +124,7 @@ for ($y=1;$y<=10;$y++){
         <montoGiftCard xsi:nil='true'/>
         <descuentoAdicional>1</descuentoAdicional>
         <codigoExcepcion xsi:nil='true'/>
-        <cafc>$cafc</cafc>
+        <cafc xsi:nil='true'/>
         <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los
             servicios que utilices.
         </leyenda>
@@ -200,7 +200,7 @@ for ($y=1;$y<=10;$y++){
             "hashArchivo"=>$hashArchivo,
             "cantidadFacturas"=>$cantidad,
             "codigoEvento"=>$codigoEvento,
-            "cafc"=>$cafc,
+//            "cafc"=>$cafc,
         ]
     ]);
     var_dump($result);

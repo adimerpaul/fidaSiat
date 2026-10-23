@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<facturaComputarizadaCompraVenta xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="facturaComputarizadaCompraVenta.xsd">
+  <cabecera>
+    <nitEmisor>120987022</nitEmisor>
+    <razonSocialEmisor>SFIDA INVERSIONES S.A.</razonSocialEmisor>
+    <municipio>Oruro</municipio>
+    <telefono>5279631</telefono>
+    <numeroFactura>1</numeroFactura>
+    <cuf>8473C92287EA7ED083C974064BB30533C9C0206AA3B257DBF0B4BF74</cuf>
+    <cufd>UJBQVVDKUpNQU4MjhFQ0M1Q0VFQktKeVFQWUthVE=OEQ3RkYzMTE</cufd>
+    <codigoSucursal>0</codigoSucursal>
+    <direccion>ZONA: NORTE, AVENIDA: 6 DE OCTUBRE, NRO.: 5049</direccion>
+    <codigoPuntoVenta>1</codigoPuntoVenta>
+    <fechaEmision>2026-10-23T15:17:00.001</fechaEmision>
+    <nombreRazonSocial>Mi razon social</nombreRazonSocial>
+    <codigoTipoDocumentoIdentidad>1</codigoTipoDocumentoIdentidad>
+    <numeroDocumento>5115889</numeroDocumento>
+    <complemento xsi:nil="true"/>
+    <codigoCliente>51158891</codigoCliente>
+    <codigoMetodoPago>1</codigoMetodoPago>
+    <numeroTarjeta xsi:nil="true"/>
+    <montoTotal>99</montoTotal>
+    <montoTotalSujetoIva>99</montoTotalSujetoIva>
+    <codigoMoneda>1</codigoMoneda>
+    <tipoCambio>1</tipoCambio>
+    <montoTotalMoneda>99</montoTotalMoneda>
+    <montoGiftCard xsi:nil="true"/>
+    <descuentoAdicional>1</descuentoAdicional>
+    <codigoExcepcion xsi:nil="true"/>
+    <cafc xsi:nil="true"/>
+    <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los
+            servicios que utilices.
+        </leyenda>
+    <usuario>pperez</usuario>
+    <codigoDocumentoSector>1</codigoDocumentoSector>
+  </cabecera>
+  <detalle>
+    <actividadEconomica>1102200</actividadEconomica>
+    <codigoProductoSin>1000701</codigoProductoSin>
+    <codigoProducto>JN-131231</codigoProducto>
+    <descripcion>JUGO DE NARANJA EN VASO</descripcion>
+    <cantidad>1</cantidad>
+    <unidadMedida>1</unidadMedida>
+    <precioUnitario>100</precioUnitario>
+    <montoDescuento>0</montoDescuento>
+    <subTotal>100</subTotal>
+    <numeroSerie>124548</numeroSerie>
+    <numeroImei>545454</numeroImei>
+  </detalle>
+</facturaComputarizadaCompraVenta>
