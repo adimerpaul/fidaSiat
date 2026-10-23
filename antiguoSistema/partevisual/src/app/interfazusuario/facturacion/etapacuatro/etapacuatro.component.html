@@ -1,0 +1,68 @@
+<app-cabeceratitulos [titulo]="'Etapa cuatro'" [descripcion]="'Etapa cuatro de Facturación'" [icono]="'cogs'" [opcion]="'Etapa cuatro'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-link"></i> Verificar Conexion </button>
+                        </div>
+                    </div>
+                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">Nro.</th>
+                                <th class="text-center align-middle">Codigo</th>
+                                <th class="text-center align-middle">Descripcion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let _item of conexion; let i = index ">
+                                <td class="text-center">{{i+1}}</td>
+                                <td class="text-center">{{_item.codigo}}</td>
+                                <td class="text-left">{{_item.descripcion}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="femitirFactura(0)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-link"></i> Emitir Factura Punto 0 </button>
+                            <button class="btn btn-primary mr-2" type="button" (click)="femitirFactura(1)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-link"></i> Emitir Factura Punto 1 </button>
+                        </div>
+                    </div>
+                    <h3 class="text-center" *ngIf="respuesta">Emitir Factura punto venta {{punto}}</h3>
+                    <p *ngIf="respuesta"><span *ngFor="let _item of respuesta.mensajes; let i = index ">
+                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br></span>
+                    </p>
+                    <table class="table table-sm table-hover" *ngIf="respuesta">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">Nro.</th>
+                                <th class="text-center align-middle">Codigo estado</th>
+                                <th class="text-center align-middle">CUF</th>
+                                <th class="text-center align-middle">Numero Factura</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center">{{1}}</td>
+                                <td class="text-center">{{respuesta.codigoEstado}}</td>
+                                <td class="text-center">{{respuesta.cuf}}</td>
+                                <td class="text-center">{{respuesta.numeroFactura}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

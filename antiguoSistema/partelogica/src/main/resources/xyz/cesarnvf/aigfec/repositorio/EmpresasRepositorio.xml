@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.EmpresasRepositorio">
+
+    <select id="obtenerTodos" resultType="Empresas">
+        select idempresa, nit, razonsocial, codigosistema, token, fechahora, ambiente, modalidad, ruta, cafc, estado
+        from facturacion.empresas
+        order by razonsocial
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Empresas">
+        select idempresa, nit, razonsocial, codigosistema, token, fechahora, ambiente, modalidad, ruta, cafc, estado
+        from facturacion.empresas
+        where concat(razonsocial) ilike '%'||#{termino}||'%'
+        order by razonsocial
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idempresa)
+        from facturacion.empresas
+        where concat(razonsocial) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Empresas">
+        select idempresa, nit, razonsocial, codigosistema, token, fechahora, ambiente, modalidad, ruta, cafc, estado
+        from facturacion.empresas
+        where idempresa=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Empresas" keyProperty="idempresa" keyColumn="idempresa">
+        insert into facturacion.empresas(nit, razonsocial, codigosistema, token, fechahora, ambiente, modalidad, ruta, cafc, estado) values
+        (#{nit}, #{razonsocial}, #{codigosistema}, #{token}, #{fechahora}, #{ambiente}, #{modalidad}, #{ruta}, #{cafc}, #{estado})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.empresas set nit=#{nit}, razonsocial=#{razonsocial}, codigosistema=#{codigosistema}, token=#{token}, fechahora=#{fechahora}, ambiente=#{ambiente}, modalidad=#{modalidad}, ruta=#{ruta}, cafc=#{cafc}, estado=#{estado}
+        where idempresa=#{idempresa}
+    </update>
+
+    <select id="obtenerEmpresaActiva" resultType="Empresas">
+        select idempresa, nit, razonsocial, codigosistema, token, fechahora, ambiente, modalidad, ruta, cafc, estado
+        from facturacion.empresas
+        where estado
+        limit 1;
+    </select>
+
+
+</mapper>

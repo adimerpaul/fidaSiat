@@ -1,0 +1,163 @@
+<app-cabeceratitulos [titulo]="'Sucursales'" [descripcion]="'Sucursales de Facturación'" [icono]="'cogs'" [opcion]="'sucursales'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="fadicionar(ab)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-plus"></i> Agregar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control mr-1" #buscar placeholder="Ingrese sucursal a buscar..." (keyup.enter)="fbuscar(buscar.value)"/>
+                        <span class="input-group-prepend">
+                            <button class="btn btn-primary mr-1" (click)="fbuscar(buscar.value)" data-toggle="tooltip" data-placement="top" title="Buscar dato">
+                                <i class="fa fa-search"></i> Buscar
+                            </button>
+                            <button class="btn btn-dark" (click)="limpiar()" (click)="buscar.value=''" data-toggle="tooltip" data-placement="top" title="Limpiar todo">
+                                <i class="fa fa-list"></i> Limpiar
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-1" *ngIf="total > cantidad">
+                    <ngb-pagination class="d-flex justify-content-end align-items-baseline pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="2" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)" size="sm"></ngb-pagination>
+                </div>
+            </div>
+
+            <div class="table-responsive" *ngIf="datos?.length">
+                <p class="text-right" *ngIf="total==1">Total: <b>{{total}} registro</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <p class="text-right" *ngIf="total>1">Total: <b>{{total}} registros</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Nro.</th>
+                            <th class="text-center align-middle">Sucursal</th>
+                            <th class="text-center align-middle">Nombre Sucursal</th>
+                            <th class="text-center align-middle">Municipio</th>
+                            <th class="text-center align-middle">Telefono</th>
+                            <th class="text-center align-middle">Direccion</th>
+                            <th class="text-center align-middle">Operaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let _item of datos; let i = index ">
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-left">{{_item.sucursal}}</td>
+                            <td class="text-left">{{_item.nombresucursal}}</td>
+                            <td class="text-left">{{_item.municipio}}</td>
+                            <td class="text-left">{{_item.telefono}}</td>
+                            <td class="text-left">{{_item.direccion}}</td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm mr-1 mb-1" (click)="fmodificar(_item.idsucursal, ab)" data-toggle="tooltip" data-placement="top" title="Editar dato"><i class="fa fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1 mb-1" (click)="fborrar(_item.idsucursal)" data-toggle="tooltip" data-placement="top" title="Borrar dato"><i class="fa fa-trash"></i> Borrar</button>
+                                <button class="btn btn-success btn-sm mr-1 mb-1" (click)="fpuntosventas(_item.idsucursal)" data-toggle="tooltip" data-placement="top" title="Sucursales"><i class="fa fa-edit"></i> Puntos de venta</button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="total > cantidad">
+                            <td colspan="7">
+                                <ngb-pagination class="d-flex justify-content-center pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="10" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)"></ngb-pagination>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" *ngIf="!datos?.length">
+                <h1 class="text-center"><b>Sin datos</b></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ab>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-edit"></i> {{ estado }} {{entidad}}</h4>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-info">Estimado rol Los campos remarcados con * (Asterisco) son necesarios.</p>
+        <form [formGroup]="formulario" (ngSubmit)="faceptar()">
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Sucursal <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="sucursal" [class.is-invalid]="f.sucursal.errors && f.sucursal.touched" />
+                            <small *ngIf="f.sucursal.errors && f.sucursal.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <div class="form-group col-md-7">
+                            <label>Nombre de la sucursal <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="nombresucursal" [class.is-invalid]="f.nombresucursal.errors && f.nombresucursal.touched" />
+                            <small *ngIf="f.nombresucursal.errors && f.nombresucursal.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Municipio <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="municipio" [class.is-invalid]="f.municipio.errors && f.municipio.touched" />
+                            <small *ngIf="f.municipio.errors && f.municipio.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+
+                        <div class="form-group col-md-6">
+                            <label>Telefono <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="telefono" [class.is-invalid]="f.telefono.errors && f.telefono.touched" />
+                            <small *ngIf="f.telefono.errors && f.telefono.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+
+                    </div>
+                    <div class="form-group">
+                        <label>Direccion <span class="text-danger"><b>*</b></span></label>
+                        <input type="text" class="form-control" formControlName="direccion" [class.is-invalid]="f.direccion.errors && f.direccion.touched" />
+                        <small *ngIf="f.direccion.errors && f.direccion.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success m-2" [disabled]="!formulario.valid">
+                <i class="fa fa-save"></i> Grabar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+            </div>
+        </form>
+
+    </div>
+</ng-template>

@@ -1,0 +1,57 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.ClientesRepositorio">
+
+    <select id="obtenerTodos" resultType="Clientes">
+        select idcliente, iddocumentoidentidadsin, cliente, numerodocumento, complemento, correoelectronico, celular, codigoexcepcion
+        from facturacion.clientes
+        order by numerodocumento
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Clientes">
+        select idcliente, iddocumentoidentidadsin, cliente, numerodocumento, complemento, correoelectronico, celular, codigoexcepcion
+        from facturacion.clientes
+        where concat(cliente,numerodocumento) ilike '%'||#{termino}||'%'
+        order by numerodocumento
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idcliente)
+        from facturacion.clientes
+        where concat(cliente,numerodocumento) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Clientes">
+        select idcliente, iddocumentoidentidadsin, cliente, numerodocumento, complemento, correoelectronico, celular, codigoexcepcion
+        from facturacion.clientes
+        where idcliente=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Clientes" keyProperty="idcliente" keyColumn="idcliente">
+        insert into facturacion.clientes(iddocumentoidentidadsin, cliente, numerodocumento, complemento, correoelectronico, celular, codigoexcepcion) values
+        (#{iddocumentoidentidadsin}, #{cliente}, #{numerodocumento}, #{complemento}, #{correoelectronico}, #{celular}, #{codigoexcepcion})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.clientes set iddocumentoidentidadsin=#{iddocumentoidentidadsin}, cliente=#{cliente}, numerodocumento=#{numerodocumento}, complemento=#{complemento}, correoelectronico=#{correoelectronico}, celular=#{celular}, codigoexcepcion=#{codigoexcepcion}
+        where idcliente=#{idcliente}
+    </update>
+
+    <delete id="borrar">
+        delete
+        from facturacion.clientes
+        where idcliente=#{id}
+    </delete>
+
+    <select id="buscarPorDocumentoResgistradoImpuestos" resultType="Clientes">
+        select idcliente, iddocumentoidentidadsin, cliente, numerodocumento, complemento, correoelectronico, celular, codigoexcepcion
+        from facturacion.clientes
+        where numerodocumento = #{cadena}
+        limit 1;
+    </select>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.EnlacesRepositorio">
+
+    <select id="obtenerPorIdusuarioPadres" resultType="Long">
+        select idenlace
+        from seguridad.enlaces join seguridad.enlacesroles using(idenlace)
+        where idenlacepadre=0 and enlacesroles.idrol in (select idrol from seguridad.usuariosroles where idusuario=#{idusuario})
+        group by idenlace
+        order by orden;
+    </select>
+
+    <select id="obtenerPorIdusuarioHijos" resultType="Long">
+        select idenlace
+        from seguridad.enlaces join seguridad.enlacesroles using(idenlace)
+        where idenlacepadre=#{idenlace} and enlacesroles.idrol in (select idrol from seguridad.usuariosroles where idusuario=#{idusuario})
+        group by idenlace, orden
+        order by orden, idenlace
+    </select>
+
+    <select id="obtenerTodosPrincipales" resultType="Enlaces">
+        select idenlace, idenlacepadre, enlace, ruta, iconoenlace, orden
+        from seguridad.enlaces
+        where not(idenlacepadre is null) and idenlacepadre = 0;
+    </select>
+
+    <select id="obtenerPorId" resultType="Enlaces">
+        select idenlace, idenlacepadre, enlace, ruta, iconoenlace, orden
+        from seguridad.enlaces
+        where idenlace=#{id}
+    </select>
+
+</mapper>

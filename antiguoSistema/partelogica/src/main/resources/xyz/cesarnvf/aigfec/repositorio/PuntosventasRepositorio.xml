@@ -1,0 +1,76 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.PuntosventasRepositorio">
+
+    <select id="obtenerTodos" resultType="Puntosventas">
+        select idpuntoventa, idsucursal, puntoventa, nombrepuntoventa, numerofactura, idusuario, estadosistema, cafc, idcufd
+        from facturacion.puntosventas
+        order by puntoventa
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Puntosventas">
+        select idpuntoventa, idsucursal, puntoventa, nombrepuntoventa, numerofactura, idusuario, estadosistema, cafc, idcufd
+        from facturacion.puntosventas
+        where concat(puntoventa) ilike '%'||#{termino}||'%' and idsucursal = #{idsucursal}
+        order by puntoventa
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idpuntoventa)
+        from facturacion.puntosventas
+        where concat(puntoventa) ilike '%'||#{termino}||'%' and idsucursal = #{idsucursal}
+    </select>
+
+    <select id="obtenerPorId" resultType="Puntosventas">
+        select idpuntoventa, idsucursal, puntoventa, nombrepuntoventa, numerofactura, idusuario, estadosistema, cafc, idcufd
+        from facturacion.puntosventas
+        where idpuntoventa=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Puntosventas" keyProperty="idpuntoventa" keyColumn="idpuntoventa">
+        insert into facturacion.puntosventas(idsucursal, puntoventa, nombrepuntoventa, numerofactura, idusuario, estadosistema, cafc, idcufd) values
+        (#{idsucursal}, #{puntoventa}, #{nombrepuntoventa}, #{numerofactura}, #{idusuario}, #{estadosistema}, #{cafc}, #{idcufd})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.puntosventas set idsucursal = #{idsucursal}, puntoventa = #{puntoventa}, nombrepuntoventa = #{nombrepuntoventa}, numerofactura=#{numerofactura}, idusuario=#{idusuario}, estadosistema=#{estadosistema}, cafc=#{cafc}, idcufd=#{idcufd}
+        where idpuntoventa=#{idpuntoventa}
+    </update>
+
+    <delete id="borrar">
+        delete
+        from facturacion.puntosventas
+        where idpuntoventa=#{id}
+    </delete>
+
+    <select id="obtenerPorPuntoventa" resultType="Puntosventas">
+        select idpuntoventa, idsucursal, puntoventa, nombrepuntoventa, numerofactura, idusuario, estadosistema, cafc, idcufd
+        from facturacion.puntosventas
+        where idpuntoventa=#{idpuntoventa}
+    </select>
+
+    <select id="obtenerPuntoventaAsignado" resultType="Long">
+        select idpuntoventa
+        from facturacion.puntosventas
+        where idusuario = #{idusuario}
+    </select>
+
+    <select id="obtenerNumerofactura" resultType="Long">
+        select numerofactura+1
+        from facturacion.puntosventas
+        where idpuntoventa = #{idpuntoventa};
+    </select>
+
+    <select id="obtenerPorIdpuntoventa0" resultType="Long">
+        select idpuntoventa
+        from facturacion.puntosventas
+        where idsucursal=#{idsucursal}
+        order by puntoventa
+        limit 1;
+    </select>
+
+</mapper>

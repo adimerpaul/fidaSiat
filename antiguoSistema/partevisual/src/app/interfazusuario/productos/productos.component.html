@@ -1,0 +1,241 @@
+<app-cabeceratitulos [titulo]="'Productos'" [descripcion]="'Productos del sistema'" [icono]="'cogs'" [opcion]="'productos'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-1" type="button" (click)="fadicionar(ab)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-plus"></i> Agregar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control mr-1" #buscar placeholder="Ingrese dato a buscar..." (keyup.enter)="fbuscar(buscar.value)"/>
+                        <span class="input-group-prepend">
+                            <button class="btn btn-primary mr-1" (click)="fbuscar(buscar.value)" data-toggle="tooltip" data-placement="top" title="Buscar dato">
+                                <i class="fa fa-search"></i> Buscar
+                            </button>
+                            <button class="btn btn-dark" (click)="limpiar()" (click)="buscar.value=''" data-toggle="tooltip" data-placement="top" title="Limpiar todo">
+                                <i class="fa fa-list"></i> Limpiar
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-1" *ngIf="total > cantidad">
+                    <ngb-pagination class="d-flex justify-content-end align-items-baseline pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="2" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)" size="sm"></ngb-pagination>
+                </div>
+            </div>
+
+            <div class="table-responsive" *ngIf="datos?.length">
+                <p class="text-right" *ngIf="total==1">Total: <b>{{total}} registro</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <p class="text-right" *ngIf="total>1">Total: <b>{{total}} registros</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Nro.</th>
+                            <th class="text-center align-middle">Codigo SIN</th>
+                            <th class="text-center align-middle">Codigo Actividad</th>
+                            <th class="text-center align-middle">Grupo</th>
+                            <th class="text-center align-middle">Unidad medida SIN</th>
+                            <th class="text-center align-middle">Unidad medida</th>
+                            <th class="text-center align-middle">Producto</th>
+                            <th class="text-center align-middle">Cantidad caja</th>
+                            <th class="text-center align-middle">Precio unitario</th>
+                            <th class="text-center align-middle">Codigo corto</th>
+                            <th class="text-center align-middle">Imagen</th>
+                            <th class="text-center align-middle">Estado</th>
+                            <th class="text-center align-middle">Operaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let _item of datos; let i = index ">
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-center">{{_item.codigosin}}</td>
+                            <td class="text-center">{{_item.codigoactividad}}</td>
+                            <td class="text-left">{{_item.grupo}}</td>
+                            <td class="text-center">{{_item.unidadmedidacodigosin}}</td>
+                            <td class="text-center">{{_item.unidadmedida}}</td>
+                            <td class="text-left">{{_item.producto}}</td>
+                            <td class="text-center">{{_item.cantidadcaja}}</td>
+                            <td class="text-right"><h4>{{_item.preciounitario| number:'1.2-2'}} Bs.</h4></td>
+                            <td class="text-center">{{_item.codigocorto}}</td>
+                            <td class="text-center">
+                                <img [src]="rutaProducto+_item.enlaceproducto" class="img-thumbnail" width="100px" height="100px"/>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-success" *ngIf="_item.habilitado==true">HABILITADO</span>
+                                <span class="badge badge-danger" *ngIf="_item.habilitado==false">DESHABILITADO</span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm mr-1 mb-1" (click)="fmodificar(_item.idproducto, ab)" data-toggle="tooltip" data-placement="top" title="Editar dato"><i class="fa fa-edit"></i> Editar</button>
+                                <button class="btn btn-info btn-sm mr-1 mb-1" (click)="ffotografia(_item.idproducto, _item.enlaceproducto, fotografia)" data-toggle="tooltip" data-placement="top" title="Tomar Imagen"><i class="fa fa-camera"></i> Imagen</button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="total > cantidad">
+                            <td colspan="13">
+                                <ngb-pagination class="d-flex justify-content-center pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="10" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)"></ngb-pagination>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" *ngIf="!datos?.length">
+                <h1 class="text-center"><b>Sin datos</b></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ab>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-edit"></i> {{ estado }} {{entidad}}</h4>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-info">Estimado rol Los campos remarcados con * (Asterisco) son necesarios.</p>
+        <form [formGroup]="formulario" (ngSubmit)="faceptar()">
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label>Codigo SIN, Actividad y Descripcion<span class="text-danger"><b>*</b></span></label>
+                        <select class="custom-select mr-1" formControlName="idproductosin" [class.is-invalid]="f.idproductosin.errors && f.idproductosin.touched">
+                            <option *ngFor="let _productosin of productossin" value="{{_productosin.idproductosin}}">{{_productosin.codigosin}} - {{_productosin.codigoactividadsin}} - {{_productosin.productosin}}</option>
+                        </select>
+                        <small *ngIf="f.idproductosin.errors && f.idproductosin.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Grupo <span class="text-danger"><b>*</b></span></label>
+                            <select class="custom-select mr-1" formControlName="idgrupo" [class.is-invalid]="f.idgrupo.errors && f.idgrupo.touched">
+                                <option *ngFor="let _grupo of grupos" value="{{_grupo.idgrupo}}">{{_grupo.grupo}}</option>
+                            </select>
+
+                            <small *ngIf="f.idgrupo.errors && f.idgrupo.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Unidad de Medida <span class="text-danger"><b>*</b></span></label>
+                            <select class="custom-select mr-1" formControlName="idunidadmedida" [class.is-invalid]="f.idunidadmedida.errors && f.idunidadmedida.touched">
+                                <option *ngFor="let _unidadmedida of unidadesmedidas" value="{{_unidadmedida.idunidadmedida}}">{{_unidadmedida.unidadmedida}}</option>
+                            </select>
+
+                            <small *ngIf="f.idunidadmedida.errors && f.idunidadmedida.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>Producto <span class="text-danger"><b>*</b></span></label>
+                        <input type="text" class="form-control" formControlName="producto" [class.is-invalid]="f.producto.errors && f.producto.touched" />
+                        <small *ngIf="f.producto.errors && f.producto.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Cantidad en caja <span class="text-danger"><b>*</b></span></label>
+                            <input type="number" class="form-control" formControlName="cantidadcaja" [class.is-invalid]="f.cantidadcaja.errors && f.cantidadcaja.touched" />
+                            <small *ngIf="f.cantidadcaja.errors && f.cantidadcaja.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Precio unitario <span class="text-danger"><b>*</b></span></label>
+                            <input type="number" class="form-control" formControlName="preciounitario" [class.is-invalid]="f.preciounitario.errors && f.preciounitario.touched" />
+                            <small *ngIf="f.preciounitario.errors && f.preciounitario.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Codigo corto <span class="text-danger"><b>*</b></span></label>
+                            <input type="number" class="form-control" formControlName="codigocorto" [class.is-invalid]="f.codigocorto.errors && f.codigocorto.touched" />
+                            <small *ngIf="f.codigocorto.errors && f.codigocorto.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado <span class="text-danger"><b>*</b></span></label>
+                        <input type="checkbox" class="form-control" formControlName="habilitado" data-toggle="toggle" data-on="Activo" data-off="Desactivado" data-onstyle="success" data-offstyle="danger">
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success m-1" [disabled]="!formulario.valid">
+                <i class="fa fa-save"></i> Grabar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+            </div>
+        </form>
+
+    </div>
+</ng-template>
+
+<ng-template #fotografia>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-camera"></i> Tomar Imagen del producto</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Imagen </label>
+                    <input type="file" class="form-control" (change)="fseleccionarArchivo($event)" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Imagen Actual</label>
+                        <img [src]="rutaProducto+enlaceproducto" class="img-thumbnail" width="250px" height="250px"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Vista Previa <span class="text-danger"><b>*</b></span></label>
+                        <img [src]="imageSrc" *ngIf="imageSrc" class="img-fluid mx-auto d-block" height="250px" width="250px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success m-2" (click)="fsubirArchivo(id_producto)">
+                <i class="fa fa-save"></i> Grabar Fotografia
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+        </div>
+    </div>
+</ng-template>

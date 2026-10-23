@@ -1,0 +1,176 @@
+<app-cabeceratitulos [titulo]="'Clientes'" [descripcion]="'Clientes del sistema'" [icono]="'users'" [opcion]="'clientes'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="fadicionar(ab)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-plus"></i> Agregar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control mr-2" #buscar placeholder="Ingrese cliente a buscar..." (keyup.enter)="fbuscar(buscar.value)"/>
+                        <span class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" (click)="fbuscar(buscar.value)" data-toggle="tooltip" data-placement="top" title="Buscar dato">
+                                <i class="fa fa-search"></i> Buscar
+                            </button>
+                            <button class="btn btn-dark" (click)="limpiar()" (click)="buscar.value=''" data-toggle="tooltip" data-placement="top" title="Limpiar todo">
+                                <i class="fa fa-list"></i> Limpiar
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-1" *ngIf="total > cantidad">
+                    <ngb-pagination class="d-flex justify-content-end align-items-baseline pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="10" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)" size="sm"></ngb-pagination>
+                </div>
+            </div>
+
+            <div class="table-responsive" *ngIf="datos?.length">
+                <p class="text-right" *ngIf="total==1">Total: <b>{{total}} registro</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <p class="text-right" *ngIf="total>1">Total: <b>{{total}} registros</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Nro.</th>
+                            <th class="text-center align-middle">Cliente</th>
+                            <th class="text-center align-middle">Numero</th>
+                            <th class="text-center align-middle">Completo</th>
+                            <th class="text-center align-middle">Tipo</th>
+                            <th class="text-center align-middle">Celular</th>
+                            <th class="text-center align-middle">Correo electrónico</th>
+                            <th class="text-center align-middle">Verificado</th>
+                            <th class="text-center align-middle">Operaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let _item of datos; let i = index ">
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-left">{{_item.cliente}}</td>
+                            <td class="text-left">{{_item.numerodocumento}}</td>
+                            <td class="text-left">{{_item.completo}}</td>
+                            <td class="text-left">{{_item.documentoidentidadsin}}</td>
+                            <td class="text-left">{{_item.celular}}</td>
+                            <td class="text-left">{{_item.correoelectronico}}</td>
+                            <td class="text-left">
+                                <span  class="badge badge-danger" *ngIf="_item.codigoexcepcion==1">No encontrado en SIAT</span>
+                                <span  class="badge badge-info" *ngIf="_item.codigoexcepcion==0">Sin problemas</span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm mr-2 mb-2" (click)="fmodificar(_item.idcliente, ab)" data-toggle="tooltip" data-placement="top" title="Editar dato"><i class="fa fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm mr-2 mb-2" (click)="fborrar(_item.idcliente)" data-toggle="tooltip" data-placement="top" title="Editar borrar"><i class="fa fa-trash"></i> Borrar</button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="total > cantidad">
+                            <td colspan="9">
+                                <ngb-pagination class="d-flex justify-content-center pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="10" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)"></ngb-pagination>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" *ngIf="!datos?.length">
+                <h1 class="text-center"><b>Sin datos</b></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ab>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-edit"></i> {{ estado }} {{entidad}}</h4>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-info">Estimado grupo Los campos remarcados con * (Asterisco) son necesarios.</p>
+        <form [formGroup]="formulario" (ngSubmit)="faceptar()">
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label>Cliente <span class="text-danger"><b>*</b></span></label>
+                        <input type="text" class="form-control" formControlName="cliente" [class.is-invalid]="f.cliente.errors && f.cliente.touched" />
+                        <small *ngIf="f.cliente.errors && f.cliente.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Documento <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="numerodocumento" [class.is-invalid]="f.numerodocumento.errors && f.numerodocumento.touched" />
+                            <small *ngIf="f.numerodocumento.errors && f.numerodocumento.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Complemento <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="complemento" [class.is-invalid]="f.complemento.errors && f.complemento.touched" />
+                            <small *ngIf="f.complemento.errors && f.complemento.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Documento <span class="text-danger"><b>*</b></span></label>
+                            <select class="custom-select mr-1" formControlName="iddocumentoidentidadsin" [class.is-invalid]="f.iddocumentoidentidadsin.errors && f.iddocumentoidentidadsin.touched">
+                                <option *ngFor="let _documentoidentidadsin of documentosidentidadessin" value="{{_documentoidentidadsin.iddocumentoidentidadsin}}">{{_documentoidentidadsin.documentoidentidadsin}}</option>
+                            </select>
+                            <small *ngIf="f.numerodocumento.errors && f.numerodocumento.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Celular <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="celular" [class.is-invalid]="f.celular.errors && f.celular.touched" />
+                            <small *ngIf="f.celular.errors && f.celular.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label>Correo electrónico <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="correoelectronico" [class.is-invalid]="f.correoelectronico.errors && f.correoelectronico.touched" />
+                            <small *ngIf="f.correoelectronico.errors && f.correoelectronico.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success m-2" [disabled]="!formulario.valid">
+                <i class="fa fa-save"></i> Grabar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+            </div>
+        </form>
+
+    </div>
+</ng-template>

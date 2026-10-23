@@ -1,0 +1,66 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.UsuariosRepositorio">
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Usuarios">
+        select idusuario, idpersona, usuario, clave2 as clave, habilitado
+        from seguridad.usuarios
+        where concat(usuario) ilike '%'||#{termino}||'%'
+        order by usuario
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idusuario)
+        from seguridad.usuarios
+        where concat(usuario) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorUsuario" resultType="Usuarios">
+        select idusuario, clave2 as clave, habilitado
+        from seguridad.usuarios
+        where usuario=#{usuario}
+    </select>
+
+    <select id="obtenerPorId" resultType="Usuarios">
+        select idusuario, idpersona, usuario, clave, habilitado
+        from seguridad.usuarios
+        where idusuario=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Usuarios" keyProperty="idusuario" keyColumn="idusuario">
+        insert into seguridad.usuarios(idpersona, usuario, clave, clave2, habilitado) values
+        (#{idpersona}, #{usuario}, '123qwe', crypt('123qwe',gen_salt('bf', 8)), #{habilitado})
+    </insert>
+
+    <update id="modificar">
+        update seguridad.usuarios set idusuario=#{idusuario}, idpersona=#{idpersona}, usuario=#{usuario}, habilitado=#{habilitado}
+        where idusuario=#{idusuario}
+    </update>
+
+    <update id="inicializarclave">
+        update seguridad.usuarios set clave=#{clave}, clave2=crypt('123qwe',gen_salt('bf', 8))
+        where idusuario=#{id}
+    </update>
+
+    <update id="cambiarclave">
+        update seguridad.usuarios set clave2=crypt(#{clave},gen_salt('bf', 8))
+        where idusuario = #{idusuario}
+    </update>
+
+    <select id="obtenerTodosRolVendedor" resultType="Usuarios">
+        select idusuario, usuario
+        from seguridad.usuarios join seguridad.usuariosroles using(idusuario)
+        where seguridad.usuariosroles.idrol=21
+    </select>
+
+    <select id="buscarPorIdT" resultType="UsuariosOTD">
+        select idusuario, idpersona, primerapellido, segundoapellido, primernombre, segundonombre, usuario, clave
+        from seguridad.usuarios join nucleo.personas using(idpersona)
+        where idusuario=#{id}
+    </select>
+
+</mapper>

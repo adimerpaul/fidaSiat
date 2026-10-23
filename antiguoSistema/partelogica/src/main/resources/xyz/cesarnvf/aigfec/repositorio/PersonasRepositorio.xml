@@ -1,0 +1,38 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.PersonasRepositorio">
+
+    <select id="obtenerPorId" resultType="Personas">
+        select idpersona, idtipogenero, idtipodocumento, idtipoextension, idpais, primerapellido, segundoapellido, primernombre, segundonombre, dip, fechaemitida, fechaexpiracion, numerocomplementario, fechanacimiento, direccion, telefono, celular, correo, idestado, idtipoestadocivil
+        from nucleo.personas
+        where idpersona=#{idpersona}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="personas" keyProperty="idpersona" keyColumn="idpersona">
+        insert into nucleo.personas(idtipogenero, idtipodocumento, idtipoextension, idpais, primerapellido, segundoapellido, primernombre, segundonombre, dip, fechaemitida, fechaexpiracion,  numerocomplementario, fechanacimiento, direccion, telefono, celular, correo, idestado, idtipoestadocivil) values
+        (#{idtipogenero}, #{idtipodocumento}, #{idtipoextension}, #{idpais},  upper(#{primerapellido}), upper(#{segundoapellido}), upper(#{primernombre}), upper(#{segundonombre}), #{dip}, #{fechaemitida}, #{fechaexpiracion}, #{numerocomplementario}, #{fechanacimiento}, upper(#{direccion}), #{telefono}, #{celular}, #{correo}, #{idestado}, #{idtipoestadocivil})
+    </insert>
+
+    <update id="modificar">
+        update nucleo.personas set idtipogenero=#{idtipogenero}, idtipodocumento=#{idtipodocumento}, idtipoextension=#{idtipoextension}, idpais=#{idpais}, primerapellido=upper(#{primerapellido}), segundoapellido=upper(#{segundoapellido}), primernombre=upper(#{primernombre}), segundonombre=upper(#{segundonombre}), dip=#{dip}, fechaemitida=#{fechaemitida}, fechaexpiracion=#{fechaexpiracion}, numerocomplementario=#{numerocomplementario}, fechanacimiento=#{fechanacimiento}, direccion=upper(#{direccion}), telefono=#{telefono}, celular=#{celular}, correo=#{correo}, idestado=#{idestado}, idtipoestadocivil=#{idtipoestadocivil}
+        where idpersona=#{idpersona}
+    </update>
+
+    <select id="obtenerTodos" resultType="Personas">
+        select idpersona, idtipogenero, idtipodocumento, idtipoextension, idpais, primerapellido, segundoapellido, primernombre, segundonombre, dip, fechaemitida, fechaexpiracion, numerocomplementario, fechanacimiento, direccion, telefono, celular, correo, idestado, concat(primerapellido, ' ', segundoapellido, ' ', primernombre) as razonsocial, idtipoestadocivil
+        from nucleo.personas
+    </select>
+
+    <select id="buscarPersona" resultType="Personas">
+        select idpersona, idtipogenero, idtipodocumento, idtipoextension, idpais, primerapellido, segundoapellido, primernombre, segundonombre, dip, fechaemitida, fechaexpiracion, numerocomplementario, fechanacimiento, direccion, telefono, celular, correo, idestado, idtipoestadocivil
+        from nucleo.personas
+        where concat(primerapellido,' ',segundoapellido,' ',primernombre,' ',segundonombre, ' ', dip) ilike '%'||#{termino}||'%'
+        order by primerapellido, segundoapellido, primernombre, segundonombre
+        limit 1;
+    </select>
+
+
+</mapper>

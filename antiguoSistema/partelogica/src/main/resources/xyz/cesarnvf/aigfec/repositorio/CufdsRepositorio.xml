@@ -1,0 +1,70 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.CufdsRepositorio">
+
+    <select id="obtenerUltimos"  resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        where idpuntoventa=#{idpuntoventa} and not estado
+        order by fechainicio desc
+        limit 10
+    </select>
+
+    <select id="obtenerTodos" resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        order by idpuntoventa
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        where concat(fechavigencia::varchar) ilike '%'||#{termino}||'%'
+        order by idpuntoventa
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idcufd)
+        from facturacion.cufds
+        where concat(fechavigencia::varchar) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        where idcufd=#{id}
+    </select>
+
+    <select id="obtenerPorIdpuntoventa" resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        where idpuntoventa=#{id} and estado
+    </select>
+
+    <select id="obtenerPorPuntoventa" resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        where idpuntoventa=#{idpuntoventa} and estado
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Cufds" keyProperty="idcufd" keyColumn="idcufd">
+        insert into facturacion.cufds(idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado) values
+        (#{idpuntoventa}, #{cufd}, #{cufdcontrol}, #{fechainicio}, #{fechavigencia}, #{estado})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.cufds set idpuntoventa=#{idpuntoventa}, cufd=#{cufd}, cufdcontrol=#{cufdcontrol}, fechainicio=#{fechainicio}, fechavigencia=#{fechavigencia}, estado=#{estado}
+        where idcufd=#{idcufd}
+    </update>
+
+    <select id="obtenerVigente" resultType="Cufds">
+        select idcufd, idpuntoventa, cufd, cufdcontrol, fechainicio, fechavigencia, estado
+        from facturacion.cufds
+        where idpuntoventa=#{idpuntoventa} and estado;
+    </select>
+
+</mapper>

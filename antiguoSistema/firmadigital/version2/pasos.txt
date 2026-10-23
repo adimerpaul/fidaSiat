@@ -1,0 +1,9 @@
+generar la clave privada:
+openssl genpkey -algorithm RSA -out sfida.pem
+
+generar el CSR
+openssl req -new -key sfida.pem -out sfida.csr -config sfida.cnf
+
+generar un certificado autofirmado
+openssl x509 -req -days 365 -in sfida.csr -signkey sfida.pem -out sfida.crt
+

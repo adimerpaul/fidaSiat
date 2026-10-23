@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.AnulacionessinRepositorio">
+
+    <select id="obtenerTodos" resultType="Anulacionessin">
+        select idanulacionsin, codigosin, anulacionsin
+        from facturacion.anulacionessin
+        order by codigosin
+    </select>
+
+    <select id="obtenerPorId" resultType="Anulacionessin">
+        select idanulacionsin, codigosin, anulacionsin
+        from facturacion.anulacionessin
+        where idanulacionsin=#{id}
+    </select>
+
+</mapper>

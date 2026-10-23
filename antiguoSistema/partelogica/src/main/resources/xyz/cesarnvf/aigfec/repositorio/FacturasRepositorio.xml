@@ -1,0 +1,134 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.FacturasRepositorio">
+
+    <select id="obtenerNoEnviadosRegistrados" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, total, numerofactura, cuf, cufd, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and estado ilike '%REGULARIZADO%' and fechaemision::date=now()::date
+        order by fechaemision desc
+    </select>
+
+    <select id="obtenerTodos" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, total, numerofactura, cuf, cufd, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda
+        from facturacion.facturas
+        order by fechaemision desc
+    </select>
+
+    <select id="obtenerNoEnviados" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, numerofactura, cuf, cufd, total, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and codigo=9081
+        order by fechaemision desc
+    </select>
+
+    <select id="obtenerNoEnviadoso" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, numerofactura, cuf, cufd, total, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and codigo=-1
+        order by fechaemision desc
+    </select>
+
+    <select id="obtenerNoEnviadosmax" resultType="java.time.LocalDateTime">
+        select max(fechaemision) + INTERVAL '1 minute'
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and codigo=9081
+    </select>
+
+
+    <select id="obtenerNoEnviadosmin" resultType="java.time.LocalDateTime">
+        select min(fechaemision)
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and codigo=9081
+    </select>
+
+    <select id="obtenerNoEnviadosmaxo" resultType="java.time.LocalDateTime">
+        select max(fechaemision) + INTERVAL '2 minute'
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and codigo=-1
+    </select>
+
+
+    <select id="obtenerNoEnviadosmino" resultType="java.time.LocalDateTime">
+        select min(fechaemision) + INTERVAL '1 minute'
+        from facturacion.facturas
+        where idpuntoventa=#{idpuntoventa} and codigo=-1
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, numerofactura, cuf, cufd, total, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda
+        from facturacion.facturas
+        where concat(numerofactura) ilike '%'||#{termino}||'%' and idusuario=#{idusuario}
+        order by fechaemision desc
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idfactura)
+        from facturacion.facturas
+        where concat(numerofactura) ilike '%'||#{termino}||'%' and idusuario=#{idusuario}
+    </select>
+
+    <select id="obtenerPorId" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, total, numerofactura, cuf, cufd, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda, idpedido
+        from facturacion.facturas
+        where idfactura=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Facturas" keyProperty="idfactura" keyColumn="idfactura">
+        insert into facturacion.facturas(idusuario, idcliente, idpuntoventa, numerofactura, cuf, cufd, idmetodopagosin, total, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda, idpedido) values
+        (#{idusuario}, #{idcliente}, #{idpuntoventa}, #{numerofactura}, #{cuf}, #{cufd}, #{idmetodopagosin}, #{total}, #{descuento}, #{efectivo}, #{cambio}, #{fechaemision}, #{codigo}, #{estado}, #{leyenda}, #{idpedido})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.facturas set idusuario=#{idusuario}, idcliente=#{idcliente}, idpuntoventa=#{idpuntoventa}, numerofactura=#{numerofactura}, cuf=#{cuf}, cufd=#{cufd}, idmetodopagosin=#{idmetodopagosin}, total=#{total}, descuento=#{descuento}, efectivo=#{efectivo}, cambio=#{cambio}, fechaemision=#{fechaemision}, codigo=#{codigo}, estado=#{estado}, leyenda=#{leyenda}, idpedido=#{idpedido}
+        where idfactura=#{idfactura}
+    </update>
+
+    <select id="obtenerPorTerminoIdpedido" resultType="Facturas">
+        select idfactura, idusuario, idcliente, idpuntoventa, idmetodopagosin, numerofactura, cuf, cufd, total, descuento, efectivo, cambio, fechaemision, codigo, estado, leyenda
+        from facturacion.facturas
+        where idusuario=#{idusuario} and idpedido &gt; 0 and date(fechaemision::date) between date(#{fechainicialmes}) and date(#{fechafinalmes})
+        order by fechaemision desc
+        limit 5
+    </select>
+
+    <select id="obtenerFacturasValidas" resultType="Facturas">
+        select idfactura, idusuario, idcliente, numerofactura, fechaemision, total, descuento, efectivo, cambio, idpedido
+        from facturacion.facturas
+        where date(fechaemision)=date(#{fecha}) and idusuario=#{idusuario} and codigo=908
+        order by numerofactura;
+    </select>
+
+    <select id="obtenerFacturasAnulados" resultType="Facturas">
+        select idfactura, idusuario, idcliente, numerofactura, fechaemision, total, descuento, efectivo, cambio, idpedido
+        from facturacion.facturas
+        where date(fechaemision)=date(#{fecha}) and idusuario=#{idusuario} and codigo=905
+        order by numerofactura;
+    </select>
+
+    <select id="obtenerFacturasRechazadosAnulados" resultType="Facturas">
+        select idfactura, idusuario, idcliente, numerofactura, fechaemision, total, descuento, efectivo, cambio, idpedido
+        from facturacion.facturas
+        where date(fechaemision)=date(#{fecha}) and idusuario=#{idusuario} and codigo=906
+        order by numerofactura;
+    </select>
+
+    <select id="obtenerFacturasOtros" resultType="Facturas">
+        select idfactura, idusuario, idcliente, numerofactura, fechaemision, total, descuento, efectivo, cambio, idpedido
+        from facturacion.facturas
+        where date(fechaemision)=date(#{fecha}) and idusuario=#{idusuario} and not codigo in (908, 905, 906)
+        order by numerofactura;
+    </select>
+
+    <select id="obtenerFacturasGeneral" resultType="Facturas">
+        select idfactura, idusuario, idcliente, numerofactura, fechaemision, total, descuento, efectivo, cambio, idpedido
+        from facturacion.facturas
+        where date(fechaemision)=date(#{fecha}) and idusuario=#{idusuario}
+        order by numerofactura;
+    </select>
+
+</mapper>

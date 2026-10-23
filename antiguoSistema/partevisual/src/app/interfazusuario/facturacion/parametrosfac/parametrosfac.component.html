@@ -1,0 +1,202 @@
+<app-cabeceratitulos [titulo]="'Parámetros'" [descripcion]="'Parámetros de Facturación'" [icono]="'cogs'" [opcion]="'parámetros'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+
+            <div class="form-group row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control mr-1" #buscar placeholder="Ingrese razon social a buscar..." (keyup.enter)="fbuscar(buscar.value)"/>
+                        <span class="input-group-prepend">
+                            <button class="btn btn-primary mr-1" (click)="fbuscar(buscar.value)" data-toggle="tooltip" data-placement="top" title="Buscar dato">
+                                <i class="fa fa-search"></i> Buscar
+                            </button>
+                            <button class="btn btn-dark" (click)="limpiar()" (click)="buscar.value=''" data-toggle="tooltip" data-placement="top" title="Limpiar todo">
+                                <i class="fa fa-list"></i> Limpiar
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-1" *ngIf="total > cantidad">
+                    <ngb-pagination class="d-flex justify-content-end align-items-baseline pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="2" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)" size="sm"></ngb-pagination>
+                </div>
+            </div>
+
+            <div class="table-responsive" *ngIf="datos?.length">
+                <p class="text-right" *ngIf="total==1">Total: <b>{{total}} registro</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <p class="text-right" *ngIf="total>1">Total: <b>{{total}} registros</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Nro.</th>
+                            <th class="text-center align-middle">NIT</th>
+                            <th class="text-center align-middle">Razon Social</th>
+                            <th class="text-center align-middle">Codigo Sistema</th>
+                            <th class="text-center align-middle">Ambiente</th>
+                            <th class="text-center align-middle">Modalidad</th>
+                            <th class="text-center align-middle">Estado</th>
+                            <th class="text-center align-middle">Operaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let _item of datos; let i = index ">
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-left">{{_item.nit}}</td>
+                            <td class="text-left">{{_item.razonsocial}}</td>
+                            <td class="text-left">{{_item.codigosistema}}</td>
+                            <td class="text-left">
+                                <span class="badge badge-danger" *ngIf="_item.ambiente==1">PRODUCCIÓN</span>
+                                <span class="badge badge-info" *ngIf="_item.ambiente==2">PRUEBAS</span>
+                            </td>
+                            <td class="text-left">
+                                <span class="badge badge-info" *ngIf="_item.modalidad==1">ELECTRÓNICA EN LÍNEA</span>
+                                <span class="badge badge-info" *ngIf="_item.modalidad==2">COMPUTARIZADA EN LÍNEA</span>
+                            </td>
+                            <td class="text-left">
+                                <span class="badge badge-success" *ngIf="_item.estado==true">HABILITADO</span>
+                                <span class="badge badge-danger" *ngIf="_item.estado==false">DESHABILITADO</span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm mr-1 mb-1" (click)="fmodificar(_item.idempresa, ab)" data-toggle="tooltip" data-placement="top" title="Editar dato"><i class="fa fa-edit"></i> Editar</button>
+                                <button class="btn btn-success btn-sm mr-1 mb-1" (click)="fsucursales(_item.idempresa)" data-toggle="tooltip" data-placement="top" title="Sucursales"><i class="fa fa-edit"></i> Sucursales</button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="total > cantidad">
+                            <td colspan="8">
+                                <ngb-pagination class="d-flex justify-content-center pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="10" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)"></ngb-pagination>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" *ngIf="!datos?.length">
+                <h1 class="text-center"><b>Sin datos</b></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ab>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-edit"></i> {{ estado }} {{entidad}}</h4>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-info">Estimado rol Los campos remarcados con * (Asterisco) son necesarios.</p>
+        <form [formGroup]="formulario" (ngSubmit)="faceptar()">
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label>Razón Social <span class="text-danger"><b>*</b></span></label>
+                        <input type="text" class="form-control" formControlName="razonsocial" [class.is-invalid]="f.razonsocial.errors && f.razonsocial.touched" />
+                        <small *ngIf="f.razonsocial.errors && f.razonsocial.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>NIT <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="nit" [class.is-invalid]="f.nit.errors && f.nit.touched" />
+                            <small *ngIf="f.nit.errors && f.nit.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <div class="form-group col-md-7">
+                            <label>Codigo del Sistema <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="codigosistema" [class.is-invalid]="f.codigosistema.errors && f.codigosistema.touched" />
+                            <small *ngIf="f.codigosistema.errors && f.codigosistema.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Modalidad <span class="text-danger"><b>*</b></span></label>
+                            <select class="form-control" formControlName="modalidad" [class.is-invalid]="f.modalidad.errors && f.modalidad.touched" >
+                                <option value="1">ELECTRÓNICA EN LÍNEA</option>
+                                <option value="2">COMPUTARIZADA EN LÍNEA</option>
+                            </select>
+                            <small *ngIf="f.modalidad.errors && f.modalidad.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Ambiente <span class="text-danger"><b>*</b></span></label>
+                            <select class="form-control" formControlName="ambiente" [class.is-invalid]="f.ambiente.errors && f.ambiente.touched" >
+                                <option value="1">PRODUCCIÓN</option>
+                                <option value="2">PRUEBAS</option>
+                            </select>
+                            <small *ngIf="f.ambiente.errors && f.ambiente.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-row"> -->
+                        <div class="form-group">
+                            <label>Ruta Servidor<span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="ruta" [class.is-invalid]="f.ruta.errors && f.ruta.touched" />
+                            <small *ngIf="f.ruta.errors && f.ruta.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <!-- <div class="form-group col-md-4">
+                            <label>CAFC<span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="cafc" [class.is-invalid]="f.cafc.errors && f.cafc.touched" />
+                            <small *ngIf="f.cafc.errors && f.cafc.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div> -->
+                    <!-- </div> -->
+
+
+                    <div class="form-group">
+                        <label>Token <span class="text-danger"><b>*</b></span></label>
+                        <textarea type="text" class="form-control" formControlName="token" [class.is-invalid]="f.token.errors && f.token.touched" rows="5" ></textarea>
+                        <small *ngIf="f.token.errors && f.token.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado <span class="text-danger"><b>*</b></span></label>
+                        <input type="checkbox" class="form-control" formControlName="estado" data-toggle="toggle" data-on="Activo" data-off="Desactivado" data-onstyle="success" data-offstyle="danger">
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success m-2" [disabled]="!formulario.valid">
+                <i class="fa fa-save"></i> Grabar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+            </div>
+        </form>
+
+    </div>
+</ng-template>

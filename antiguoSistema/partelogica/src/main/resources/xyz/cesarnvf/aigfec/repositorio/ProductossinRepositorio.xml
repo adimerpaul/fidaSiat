@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.ProductossinRepositorio">
+
+    <select id="obtenerTodos" resultType="Productossin">
+        select idproductosin, codigosin, codigoactividadsin, productosin
+        from facturacion.productossin
+        order by codigosin
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Productossin">
+        select idproductosin, codigosin, codigoactividadsin, productosin
+        from facturacion.productossin
+        where concat(productosin) ilike '%'||#{termino}||'%'
+        order by codigosin
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idproductosin)
+        from facturacion.productossin
+        where concat(productosin) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Productossin">
+        select idproductosin, codigosin, codigoactividadsin, productosin
+        from facturacion.productossin
+        where idproductosin=#{id}
+    </select>
+
+    <select id="verificarCodigosin" resultType="Productossin">
+        select idproductosin, codigosin, codigoactividadsin, productosin
+        from facturacion.productossin
+        where codigosin=#{codigosin} and codigoactividadsin=#{codigoactividadsin}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Productossin" keyProperty="idproductosin" keyColumn="idproductosin">
+        insert into facturacion.productossin(codigosin, codigoactividadsin, productosin) values
+        (#{codigosin}, #{codigoactividadsin}, #{productosin})
+    </insert>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.NotasentregaRepositorio">
+
+    <select id="obtenerNotasentrega" resultType="Notasentrega">
+        (SELECT id_pedidoprof as id_pedido, p.nombres, p.nit,num_cladoc,periodo as cadena1, (CASE WHEN tag='X' THEN 0 ELSE precio_total END) as precio_total, c.codigomayor as cadena2, c.nombremayorista as cadena3
+        FROM ventas.pedidosprof p INNER JOIN ventas.clientemayor c ON p.idmayor = c.id_clientemayor
+        WHERE p.id_estado = 'N'  and p.tag like 'N' and date(p.fecha) between date(#{fechainicialmes}) and date(#{fechafinalmes}) and UPPER(num_cladoc||p.nombres||p.periodo||p.nit||p.numeracion||c.codigomayor||c.nombremayorista) like UPPER('%'||#{termino}||'%')
+        ORDER BY fecha desc, num_cladoc desc)
+    UNION
+       (SELECT id_pedidoprof as id_pedido, p.nombres, p.nit,num_cladoc,periodo as cadena1, (CASE WHEN tag='X' THEN 0 ELSE precio_total END) as precio_total, '' as cadena2, 'SIN MAYOR' as cadena3
+        FROM ventas.pedidosprof p
+        WHERE p.id_estado = 'N'  and p.tag like 'N' and date(p.fecha) between date(#{fechainicialmes}) and date(#{fechafinalmes}) and UPPER(num_cladoc||p.nombres||p.periodo||p.nit||p.numeracion||num_cladoc) like UPPER('%'||#{termino}||'%') and p.id_cliente not in (select id_cliente from ventas.clientemayor c) ORDER BY fecha desc, num_cladoc desc)
+    </select>
+
+    <select id="obtenerPorId" resultType="Notasentrega">
+        SELECT id_pedidoprof as id_pedido, p.nombres, p.nit,num_cladoc,periodo as cadena1, (CASE WHEN tag='X' THEN 0 ELSE precio_total END) as precio_total, c.codigomayor as cadena2, c.nombremayorista as cadena3
+        FROM ventas.pedidosprof p INNER JOIN ventas.clientemayor c ON p.idmayor = c.id_clientemayor
+        WHERE id_pedidoprof = #{id}
+    </select>
+
+    <select id="verificarExistenciaFactura" resultType="Long">
+        select idfactura from facturacion.facturas where idpedido=#{id};
+    </select>
+
+    <select id="verificaPropiedad" resultType="String">
+        select trim(apodo) as apodo from _usuarios where id_persona = (select id_persona from ventas.pedidosprof where id_pedidoprof = #{id})
+    </select>
+
+</mapper>

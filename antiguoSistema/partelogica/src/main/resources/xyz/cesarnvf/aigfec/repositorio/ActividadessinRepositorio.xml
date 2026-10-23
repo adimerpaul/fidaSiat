@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.ActividadessinRepositorio">
+
+    <select id="obtenerTodos" resultType="Actividadessin">
+        select idactividadsin, codigosin, actividadsin
+        from facturacion.actividadessin
+        order by actividadsin
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Actividadessin">
+        select idactividadsin, codigosin, actividadsin
+        from facturacion.actividadessin
+        where concat(actividadsin) ilike '%'||#{termino}||'%'
+        order by codigosin
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idactividadsin)
+        from facturacion.actividadessin
+        where concat(actividadsin) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Actividadessin">
+        select idactividadsin, codigosin, actividadsin
+        from facturacion.actividadessin
+        where idactividadsin=#{id}
+    </select>
+
+    <select id="verificarCodigosin" resultType="Actividadessin">
+        select idactividadsin, codigosin, actividadsin
+        from facturacion.actividadessin
+        where codigosin=#{codigosin}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Actividadessin" keyProperty="idactividadsin" keyColumn="idactividadsin">
+        insert into facturacion.actividadessin(codigosin, actividadsin) values
+        (#{codigosin}, #{actividadsin})
+    </insert>
+
+</mapper>

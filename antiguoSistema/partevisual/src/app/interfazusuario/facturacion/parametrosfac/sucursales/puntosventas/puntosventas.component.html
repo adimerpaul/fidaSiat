@@ -1,0 +1,219 @@
+<app-cabeceratitulos [titulo]="'Puntos de venta'" [descripcion]="'Puntos de venta de Facturación'" [icono]="'cogs'" [opcion]="'puntos de venta'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="fadicionar(ab)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-plus"></i> Agregar </button>
+                            <button class="btn btn-primary mr-2" type="button" (click)="fsucursales()" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-arrow-left"></i> Sucursales </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control mr-1" #buscar placeholder="Ingrese punto de venta a buscar..." (keyup.enter)="fbuscar(buscar.value)"/>
+                        <span class="input-group-prepend">
+                            <button class="btn btn-primary mr-1" (click)="fbuscar(buscar.value)" data-toggle="tooltip" data-placement="top" title="Buscar dato">
+                                <i class="fa fa-search"></i> Buscar
+                            </button>
+                            <button class="btn btn-dark" (click)="limpiar()" (click)="buscar.value=''" data-toggle="tooltip" data-placement="top" title="Limpiar todo">
+                                <i class="fa fa-list"></i> Limpiar
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-1" *ngIf="total > cantidad">
+                    <ngb-pagination class="d-flex justify-content-end align-items-baseline pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="2" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)" size="sm"></ngb-pagination>
+                </div>
+            </div>
+
+            <div class="table-responsive" *ngIf="datos?.length">
+                <p class="text-right" *ngIf="total==1">Total: <b>{{total}} registro</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <p class="text-right" *ngIf="total>1">Total: <b>{{total}} registros</b>&nbsp;
+                    <select #cantidad (change)="fcambiarcantidad(cantidad.value)">
+                        <option [value]="5">5</option>
+                        <option [value]="10" selected>10</option>
+                        <option [value]="20">20</option>
+                    </select>
+                </p>
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Nro.</th>
+                            <th class="text-center align-middle">Punto de venta</th>
+                            <th class="text-center align-middle">Nombre Punto de venta</th>
+                            <th class="text-center align-middle">Numero Facturación</th>
+                            <th class="text-center align-middle">CUI</th>
+                            <th class="text-center align-middle">CUFD</th>
+                            <th class="text-center align-middle">Usuario</th>
+                            <th class="text-center align-middle">Descuentos</th>
+                            <th class="text-center align-middle">Tipo de Impresion</th>
+                            <th class="text-center align-middle">Cafc</th>
+                            <th class="text-center align-middle">Operaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let _item of datos; let i = index ">
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-center">{{_item.puntoventa}}</td>
+                            <td class="text-center">{{_item.nombrepuntoventa}}</td>
+                            <td class="text-center">{{_item.numerofactura}}</td>
+                            <td class="text-center">{{_item.cui}}</td>
+                            <td class="text-center">{{_item.cufd}}<br>{{_item.cufdfechainicio}} - {{_item.cufdfechavigencia}}</td>
+                            <td class="text-center">{{_item.usuario}}</td>
+                            <td class="text-center">
+                                <ul class="list-inline">
+                                    <li *ngFor="let _descuento of _item.descuentos" class="list-inline-item">
+                                        <span class="badge badge-primary">{{_descuento}}</span>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td class="text-center">
+                                <h3>
+                                    <span  class="badge badge-success" *ngIf="_item.estadosistema==1">ROLLO</span>
+                                    <span  class="badge badge-success" *ngIf="_item.estadosistema==0">MEDIA PAGINA</span>
+                                </h3>
+                            </td>
+                            <td class="text-center">{{_item.cafc}}</td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm mr-1 mb-1" (click)="fmodificar(_item.idpuntoventa, ab)" data-toggle="tooltip" data-placement="top" title="Editar dato"><i class="fa fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1 mb-1" (click)="fborrar(_item.idpuntoventa)" data-toggle="tooltip" data-placement="top" title="Borrar dato"><i class="fa fa-trash"></i> Borrar</button>
+                                <button class="btn btn-primary btn-sm mr-1 mb-1" type="button" (click)="fregistracui(_item.idpuntoventa)" data-toggle="tooltip" data-placement="top" title="Obtener CUI"><i class="fa fa-link"></i> Obtener CUI {{_item.idpuntoventa}} </button>
+                                <button class="btn btn-primary btn-sm" type="button" (click)="fregistracufd(_item.idpuntoventa)" data-toggle="tooltip" data-placement="top" title="Obtener CUFD"><i class="fa fa-link"></i> Obtener CUFD {{_item.idpuntoventa}} </button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="total > cantidad">
+                            <td colspan="11">
+                                <ngb-pagination class="d-flex justify-content-center pagination-rounded" [collectionSize]="total" [(page)]="pagina" [maxSize]="10" [rotate]="false" [ellipses]="false" [pageSize]="cantidad" [boundaryLinks]="true" (pageChange)="mostrarMas($event)"></ngb-pagination>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" *ngIf="!datos?.length">
+                <h1 class="text-center"><b>Sin datos</b></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ab>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-edit"></i> {{ estado }} {{entidad}}</h4>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-info">Estimado rol Los campos remarcados con * (Asterisco) son necesarios.</p>
+        <form [formGroup]="formulario" (ngSubmit)="faceptar()">
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label>Usuario Asignado <span class="text-danger"><b>*</b></span></label>
+                            <select class="custom-select mr-1" formControlName="idusuario" [class.is-invalid]="f.idusuario.errors && f.idusuario.touched">
+                                <option *ngFor="let _usuario of usuarios" value="{{_usuario.idusuario}}">{{_usuario.usuario}}</option>
+                            </select>
+                            <small *ngIf="f.idusuario.errors && f.idusuario.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label>Numero de factura <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="numerofactura" [class.is-invalid]="f.numerofactura.errors && f.numerofactura.touched" />
+                            <small *ngIf="f.numerofactura.errors && f.numerofactura.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Punto de venta <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="puntoventa" [class.is-invalid]="f.puntoventa.errors && f.puntoventa.touched" />
+                            <small *ngIf="f.puntoventa.errors && f.puntoventa.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <div class="form-group col-md-7">
+                            <label>Nombre de la puntoventa <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="nombrepuntoventa" [class.is-invalid]="f.nombrepuntoventa.errors && f.nombrepuntoventa.touched" />
+                            <small *ngIf="f.nombrepuntoventa.errors && f.nombrepuntoventa.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descuentos <span class="text-danger"><b>*</b></span></label>
+                        <ng-select [multiple]="true" [(ngModel)]="dato.iddescuentos" formControlName="iddescuentos">
+                            <ng-option *ngFor="let _descuento of descuentos" [value]="_descuento.iddescuento">{{_descuento.descuento}}</ng-option>
+                        </ng-select>
+                        <small *ngIf="f.iddescuentos.errors && f.iddescuentos.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label>Tipo de Impresion <span class="text-danger"><b>*</b></span></label>
+                            <select class="custom-select" formControlName="estadosistema">
+                                <option [value]="1">ROLLO</option>
+                                <option [value]="0">MEDIA PAGINA</option>
+                            </select>
+                            <small *ngIf="f.estadosistema.errors && f.estadosistema.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label>CAFC <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="cafc" [class.is-invalid]="f.cafc.errors && f.cafc.touched" disabled=""/>
+                            <small *ngIf="f.cafc.errors && f.cafc.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ultimos Cufds <span class="text-danger"><b>*</b></span></label>
+                        <select class="custom-select mr-1" formControlName="idcufd" [class.is-invalid]="f.idcufd.errors && f.idcufd.touched" disabled>
+                            <option *ngFor="let _cufd of cufds" value="{{_cufd.idcufd}}">{{_cufd.fechainicio}} {{_cufd.cufd}}</option>
+                        </select>
+                        <small *ngIf="f.idcufd.errors && f.idcufd.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success m-2" [disabled]="!formulario.valid">
+                <i class="fa fa-save"></i> Grabar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+            </div>
+        </form>
+
+    </div>
+</ng-template>

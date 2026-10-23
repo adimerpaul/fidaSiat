@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.RolesRepositorio">
+
+    <select id="obtenerTodos" resultType="Roles">
+        select idrol, rol
+        from seguridad.roles
+        order by rol
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Roles">
+        select idrol, rol
+        from seguridad.roles
+        where concat(rol) ilike '%'||#{termino}||'%'
+        order by rol
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idrol)
+        from seguridad.roles
+        where concat(rol) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Roles">
+        select idrol, rol
+        from seguridad.roles
+        where idrol=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Roles" keyProperty="idrol" keyColumn="idrol">
+        insert into seguridad.roles(rol) values
+        (#{rol})
+    </insert>
+
+    <update id="modificar">
+        update seguridad.roles set rol=#{rol}
+        where idrol=#{idrol}
+    </update>
+
+
+</mapper>

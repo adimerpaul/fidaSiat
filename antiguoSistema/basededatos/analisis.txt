@@ -1,0 +1,16 @@
+SELECT id_pedidoprof as id_pedido, p.nombres,nit,num_cladoc,periodo cadena11, (CASE WHEN tag='X' THEN 0 ELSE precio_total END) precio_total
+FROM ventas.pedidosprof p 
+INNER JOIN public.personas e ON p.id_persona=e.id_persona
+INNER JOIN ventas.almacenes f ON f.id_almacen=p.id_almacen
+FULL JOIN ventas.almacenes a ON a.id_almacen=p.id_almacen2
+FULL JOIN ventas.sucursales s ON s.id_sucursal=p.id_sucursal
+WHERE (p.id_estado = 'N' or p.id_estado = 'N' ) and p.tag like 'V' and p.cod_esta=401 and (p.id_almacen between 3 and 3) and date(p.fecha) between date('2024-03-01') and date('2024-03-31') and UPPER(num_cladoc||p.nombres||p.periodo||p.nit||p.numeracion||f.almacen||a.almacen||s.descripcion||num_cladoc) like UPPER('%') 
+ORDER BY fecha desc, num_cladoc desc
+LIMIT 50;
+       
+select id_kardexprof, id_producto, entrega from ventas.kardexprof where id_pedidoprof =4864;
+select * from ventas.productos order by id_producto;
+
+select * from facturacion.productos order by idproducto;    
+       
+       

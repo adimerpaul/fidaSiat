@@ -1,0 +1,62 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.CuisRepositorio">
+
+    <select id="obtenerTodos" resultType="Cuis">
+        select idcui, idpuntoventa, cui, fechavigencia, estado
+        from facturacion.cuis
+        order by idpuntoventa
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Cuis">
+        select idcui, idpuntoventa, cui, fechavigencia, estado
+        from facturacion.cuis
+        where concat(fechavigencia::varchar) ilike '%'||#{termino}||'%'
+        order by idpuntoventa
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idcui)
+        from facturacion.cuis
+        where concat(fechavigencia::varchar) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Cuis">
+        select idcui, idpuntoventa, cui, fechavigencia, estado
+        from facturacion.cuis
+        where idcui=#{id}
+    </select>
+
+    <select id="obtenerPorIdpuntoventa" resultType="Cuis">
+        select idcui, idpuntoventa, cui, fechavigencia, estado
+        from facturacion.cuis
+        where idpuntoventa=#{id} and estado
+    </select>
+
+    <select id="obtenerPorPuntoventa" resultType="Cuis">
+        select idcui, idpuntoventa, cui, fechavigencia, estado
+        from facturacion.cuis
+        where idpuntoventa=#{puntoventa} and estado
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Cuis" keyProperty="idcui" keyColumn="idcui">
+        insert into facturacion.cuis(idpuntoventa, cui, fechavigencia, estado) values
+        (#{idpuntoventa}, #{cui}, #{fechavigencia}, #{estado})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.cuis set idpuntoventa=#{idpuntoventa}, cui=#{cui}, fechavigencia=#{fechavigencia}, estado=#{estado}
+        where idcui=#{idcui}
+    </update>
+
+    <select id="obtenerVigente" resultType="Cuis">
+        select idcui, idpuntoventa, cui, fechavigencia, estado
+        from facturacion.cuis
+        where idpuntoventa=#{idpuntoventa} and estado;
+    </select>
+
+</mapper>

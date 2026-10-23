@@ -1,0 +1,51 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.SucursalesRepositorio">
+
+    <select id="obtenerTodos" resultType="Sucursales">
+        select idsucursal, idempresa, sucursal, nombresucursal, municipio, telefono, direccion
+        from facturacion.sucursales
+        where idempresa = #{idempresa}
+        order by sucursal
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Sucursales">
+        select idsucursal, idempresa, sucursal, nombresucursal, municipio, telefono, direccion
+        from facturacion.sucursales
+        where concat(sucursal) ilike '%'||#{termino}||'%' and idempresa = #{idempresa}
+        order by sucursal
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idsucursal)
+        from facturacion.sucursales
+        where concat(sucursal) ilike '%'||#{termino}||'%' and idempresa = #{idempresa}
+    </select>
+
+    <select id="obtenerPorId" resultType="Sucursales">
+        select idsucursal, idempresa, sucursal, nombresucursal, municipio, telefono, direccion
+        from facturacion.sucursales
+        where idsucursal=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Sucursales" keyProperty="idsucursal" keyColumn="idsucursal">
+        insert into facturacion.sucursales(idempresa, sucursal, nombresucursal, municipio, telefono, direccion) values
+        (#{idempresa}, #{sucursal}, #{nombresucursal}, #{municipio}, #{telefono}, #{direccion})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.sucursales set idempresa=#{idempresa}, sucursal=#{sucursal}, nombresucursal=#{nombresucursal}, municipio=#{municipio}, telefono=#{telefono}, direccion=#{direccion}
+        where idsucursal=#{idsucursal}
+    </update>
+
+    <delete id="borrar">
+        delete
+        from facturacion.sucursales
+        where idsucursal=#{id}
+    </delete>
+
+</mapper>

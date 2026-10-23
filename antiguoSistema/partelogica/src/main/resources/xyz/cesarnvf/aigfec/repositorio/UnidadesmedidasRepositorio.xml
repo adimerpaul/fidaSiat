@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.UnidadesmedidasRepositorio">
+
+    <select id="obtenerTodos" resultType="Unidadesmedidas">
+        select idunidadmedida, codigosin, unidadmedida, sigla
+        from facturacion.unidadesmedidas
+        order by codigosin
+    </select>
+
+    <select id="obtenerPorId" resultType="Unidadesmedidas">
+        select idunidadmedida, codigosin, unidadmedida, sigla
+        from facturacion.unidadesmedidas
+        where idunidadmedida=#{id}
+    </select>
+
+    <select id="verificarCodigosin" resultType="Unidadesmedidas">
+        select idunidadmedida, codigosin, unidadmedida, sigla
+        from facturacion.unidadesmedidas
+        where codigosin=#{codigosin}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Unidadesmedidas" keyProperty="idunidadmedida" keyColumn="idunidadmedida">
+        insert into facturacion.unidadesmedidas(codigosin, unidadmedida, sigla) values
+        (#{codigosin}, #{unidadmedida}, #{sigla})
+    </insert>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.LeyendassinRepositorio">
+
+    <select id="obtenerTodos" resultType="Leyendassin">
+        select idleyendasin, codigosin, leyendasin
+        from facturacion.leyendassin
+        order by leyendasin
+    </select>
+
+    <select id="obtenerPorId" resultType="Leyendassin">
+        select idleyendasin, codigosin, leyendasin
+        from facturacion.leyendassin
+        where idleyendasin=#{id}
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Leyendassin">
+        select idleyendasin, codigosin, leyendasin
+        from facturacion.leyendassin
+        where concat(leyendasin) ilike '%'||#{termino}||'%'
+        order by codigosin
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idleyendasin)
+        from facturacion.leyendassin
+        where concat(leyendasin) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="verificarCodigosin" resultType="Leyendassin">
+        select idleyendasin, codigosin, leyendasin
+        from facturacion.leyendassin
+        where codigosin=#{codigosin} and leyendasin=#{leyendasin}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Leyendassin" keyProperty="idleyendasin" keyColumn="idleyendasin">
+        insert into facturacion.leyendassin(codigosin, leyendasin) values
+        (#{codigosin}, #{leyendasin})
+    </insert>
+
+    <select id="obtenerLeyendaAleatoriamente" resultType="Leyendassin">
+        select idleyendasin, codigosin, leyendasin
+        from facturacion.leyendassin
+        where leyendassin.codigosin =471902
+        limit 1
+        offset ((random() * 7)::integer);
+    </select>
+
+</mapper>

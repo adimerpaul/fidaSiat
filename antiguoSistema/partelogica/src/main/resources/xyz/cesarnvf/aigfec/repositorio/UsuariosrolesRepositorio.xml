@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.UsuariosrolesRepositorio">
+
+    <select id="obtenerPorIdusuario" resultType="Usuariosroles">
+        select idrol
+        from seguridad.usuariosroles
+        where idusuario=#{id}
+    </select>
+
+    <insert id="adicionar">
+        insert into seguridad.usuariosroles(idusuario, idrol) values
+        (#{idusuario}, #{idrol})
+    </insert>
+
+    <delete id="borrar">
+        delete
+        from seguridad.usuariosroles
+        where idusuario=#{idusuario}
+    </delete>
+
+</mapper>

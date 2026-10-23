@@ -1,0 +1,82 @@
+<app-cabeceratitulos [titulo]="'Eventos significativos'" [descripcion]="'Eventos significativos del sistema'" [icono]="'users'" [opcion]="'eventos significativos'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+            <h1>Resumen de Facturas regularizadas</h1>
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <select class="custom-select mr-1" #ideventosignificativo>
+                            <option *ngFor="let _eventosignificativo of eventossignigicativossin" value="{{_eventosignificativo.ideventosignificativosin}}">{{_eventosignificativo.eventosignificativosin}}</option>
+                        </select>
+                        <!-- <input type="datetime-local" class="form-control mr-1" #fechahoraini [value]="fechaActual"/>
+                        <input type="datetime-local" class="form-control mr-1" #fechahorafin [value]="fechaActual"/> -->
+                        <span class="input-group-prepend">
+                            <button class="btn btn-primary mr-2"  data-toggle="tooltip" data-placement="top" title="Buscar dato" (click)="fobtenercodigo(ideventosignificativo.value)">
+                                <i class="fa fa-search"></i> Obtener codigo
+                            </button>
+                            <button class="btn btn-primary mr-2"  data-toggle="tooltip" data-placement="top" title="Buscar dato" (click)="fenviar()" *ngIf="codigo">
+                                <i class="fa fa-share-square-o"></i> Enviar
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive" *ngIf="facturasnoenviadas?.length">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center" colspan="12" *ngIf="codigo"><h1>{{codigo}}</h1></th>
+                        </tr>
+                        <tr>
+                            <th class="text-center align-middle">Nro.</th>
+                            <th class="text-center align-middle">Fecha emision</th>
+                            <th class="text-center align-middle">Cliente</th>
+                            <th class="text-center align-middle">C.I. o NIT</th>
+                            <th class="text-center align-middle">Total</th>
+                            <th class="text-center align-middle">Descuento</th>
+                            <th class="text-center align-middle">Total a Pagar</th>
+                            <th class="text-center align-middle">Efectivo</th>
+                            <th class="text-center align-middle">Cambio</th>
+                            <th class="text-center align-middle">Codigo</th>
+                            <th class="text-center align-middle">Estado</th>
+                            <th class="text-center align-middle">Nro Factura<br>CUFD<br>CUF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let _item of facturasnoenviadas; let i = index " [ngClass]="{
+                                'table-success': _item.codigo==908,
+                                'table-danger': _item.codigo==905
+                            }"
+                        >
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-center">{{_item.fechaemision | date: 'dd/MM/yyyy HH:mm'}}</td>
+                            <td class="text-left">{{_item.cliente}}</td>
+                            <td class="text-left">{{_item.numerodocumento}}</td>
+                            <td class="text-right"><h4>{{_item.total| number:'1.2-2'}}</h4></td>
+                            <td class="text-right"><h4>{{_item.descuento| number:'1.2-2'}}</h4></td>
+                            <td class="text-right"><h4>{{_item.total - _item.descuento| number:'1.2-2'}}</h4></td>
+                            <td class="text-right"><h4>{{_item.efectivo| number:'1.2-2'}}</h4></td>
+                            <td class="text-right"><h4>{{_item.cambio| number:'1.2-2'}}</h4></td>
+                            <td class="text-center">{{_item.codigo}}</td>
+                            <td class="text-center">{{_item.estado}}</td>
+                            <td class="text-center">
+                                {{_item.numerofactura}}<br>
+                                {{_item.cufd}}<br>
+                                {{_item.cuf}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" *ngIf="!facturasnoenviadas?.length">
+                <h1 class="text-center"><b>Sin datos</b></h1>
+            </div>
+
+        </div>
+    </div>
+</div>

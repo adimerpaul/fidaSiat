@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.KardexRepositorio">
+
+    <select id="obtenerPorIdPedido" resultType="Kardex">
+        select id_pedidoprof as id_pedido, id_kardexprof as id_kardex, id_producto, entrega as cantidad, precio_venta as preciounitario, prioridad
+        from ventas.kardexprof where id_pedidoprof = #{id_pedido};
+    </select>
+
+</mapper>

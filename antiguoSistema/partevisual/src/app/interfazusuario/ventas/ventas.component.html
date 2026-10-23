@@ -1,0 +1,376 @@
+<div class="container-fluid tile">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center ">
+            <button type="button" class="btn btn-primary m-1" *ngFor="let _grupo of grupos; let i = index" (click)="fseleccionar(_grupo.idgrupo)">
+                <i class="fa fa-birthday-cake"></i> {{_grupo.grupo}}
+            </button>
+            <hr>
+        </div>
+        <div class="col-lg-3 col-xl-3 d-none d-lg-block d-xl-block" style="overflow-y: scroll; height: 750px">
+            <div class="row">
+                <div class="col-md-3 col-sm-6" *ngFor="let _item of productospanel1; let i = index ">
+                    <div class="producto-grilla">
+                        <div class="producto-imagen">
+                            <a (click)="fadicionar(_item.idproducto)">
+                                <img [src]="obtenerRutaImagen(_item.enlaceproducto)" />
+                            </a>
+                            <span class="producto-etiqueta">{{_item.preciounitario}} Bs</span>
+                        </div>
+                        <div class="producto-contenido">
+                            <h5 class="titulo">{{_item.producto}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6" style="overflow-y: scroll; height: 750px">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary m-1" type="button" (click)="fnuevopedido()"><i class="fa fa-plus"></i> Nuevo Pedido </button>
+                            <button class="btn btn-secondary m-1" type="button" (click)="fnuevocliente(nuevocliente)"><i class="fa fa-user-plus"></i> Nuevo Cliente </button>
+                            <button class="btn btn-primary m-1" type="button" (click)="fproductos(producto)"><i class="fa fa-dropbox"></i> Adicionar Producto </button>
+                        </div>
+                    </div>
+
+                    <form [formGroup]="formularioventa">
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>C.I. o NIT<span class="text-danger"><b>*</b></span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" formControlName="numerodocumento" #buscar/>
+                                    <span class="input-group-prepend">
+                                        <button class="btn btn-primary" (click)="fbuscarCliente(buscar.value)">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                                <small *ngIf="f.numerodocumento.errors && f.numerodocumento.touched" class="text-danger">
+                                    El dato es obligatorio
+                                </small>
+                            </div>
+
+                            <div class="form-group col-md-1">
+                                <label>Compl.<span class="text-danger"><b>*</b></span></label>
+                                <input type="text" class="form-control" formControlName="complemento" disabled/>
+                                <small *ngIf="f.complemento.errors && f.complemento.touched" class="text-danger">
+                                    El dato es obligatorio
+                                </small>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label>Cliente <span class="text-danger"><b>*</b></span></label>
+                                <input type="text" class="form-control" formControlName="cliente" [class.is-invalid]="f.cliente.errors && f.cliente.touched" disabled/>
+                                <small *ngIf="f.cliente.errors && f.cliente.touched" class="text-danger">
+                                    El dato es obligatorio
+                                </small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Tipo Documento <span class="text-danger"><b>*</b></span></label>
+                                <select class="custom-select mr-1" formControlName="iddocumentoidentidadsin" [class.is-invalid]="f.iddocumentoidentidadsin.errors && f.iddocumentoidentidadsin.touched" disabled>
+                                    <option *ngFor="let _documentoidentidadsin of documentosidentidadessin" value="{{_documentoidentidadsin.iddocumentoidentidadsin}}">{{_documentoidentidadsin.documentoidentidadsin}}</option>
+                                </select>
+                                <small *ngIf="f.iddocumentoidentidadsin.errors && f.iddocumentoidentidadsin.touched" class="text-danger">
+                                    El dato es obligatorio
+                                </small>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-bordered table-hover" *ngIf="factura">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center col-4">Producto</th>
+                                    <th scope="col" class="text-center col-1">Cantidad</th>
+                                    <th scope="col" class="text-center col-1">Precio Unitario</th>
+                                    <th scope="col" class="text-center col-1">Descuento</th>
+                                    <th scope="col" class="text-center col-2">Subtotal</th>
+                                    <th scope="col" class="text-center col-3">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let _item of factura.detalles; let i = index ">
+                                    <td class="text-left">{{_item.producto}}</td>
+                                    <td class="text-center">
+                                        <h4>{{_item.cantidad}}</h4>
+                                    </td>
+                                    <td class="text-right"><h4>{{_item.preciounitario  | number:'1.2-2'}}</h4></td>
+                                    <td class="text-right"><h4>{{_item.descuento  | number:'1.2-2'}}</h4></td>
+                                    <td class="text-right"><h4>{{_item.subtotal  | number:'1.2-2'}}</h4></td>
+                                    <td class="text-center">
+                                        <span class="text-info"><i class="fa fa-plus-square-o fa-2x mr-2" (click)="fincrementar(i)"></i><i class="fa fa-minus-square-o fa-2x mr-2" (click)="fdecrementar(i)"></i><i class="fa fa-square-o fa-2x mr-2" (click)="fingresoCantidad(i, cantidad)"></i></span>
+                                        <span class="text-danger"><i class="fa fa-trash fa-2x" (click)="feliminarproducto(i)"></i></span>
+                                    </td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total>0">
+                                    <td class="text-right"><h5>Total --&gt;</h5></td>
+                                    <td class="text-right" colspan="3"><h3>{{factura.descuento | number:'1.2-2'}}</h3></td>
+                                    <td class="text-right"><h3>{{factura.total | number:'1.2-2'}}</h3></td>
+                                    <td class="text-center"><h5> Bs.</h5></td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total>0">
+                                    <td class="text-center">
+                                        <b>Descuentos Galletas</b><br>
+                                        <select #datogalleta (change)="fprocesardescuentosseleccionados(datogalleta.value, datofideo.value, datobalanceado.value, datosurtidas.value)">
+                                            <option
+                                                *ngFor="let _numerogalleta of numerosgalletas"
+                                                [selected]="_numerogalleta === seleccionDescuentoGalleta"
+                                                [value]="_numerogalleta">{{ _numerogalleta }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center" colspan="2">
+                                        <b>Descuentos Surtidas</b><br>
+                                        <select #datosurtidas (change)="fprocesardescuentosseleccionados(datogalleta.value, datofideo.value, datobalanceado.value, datosurtidas.value)">
+                                            <option
+                                                *ngFor="let _numerosurtida of numerossurtidas"
+                                                [selected]="_numerosurtida === seleccionDescuentoSurtidas"
+                                                [value]="_numerosurtida">{{ _numerosurtida }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center" colspan="2">
+                                        <b>Descuentos Fideos</b><br>
+                                        <select #datofideo (change)="fprocesardescuentosseleccionados(datogalleta.value, datofideo.value, datobalanceado.value, datosurtidas.value)">
+                                            <option
+                                                *ngFor="let _numerofideo of numerosfideos"
+                                                [selected]="_numerofideo === seleccionDescuentoFideo"
+                                                [value]="_numerofideo">{{ _numerofideo }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <b>Descuentos Balanceados</b><br>
+                                        <select #datobalanceado (change)="fprocesardescuentosseleccionados(datogalleta.value, datofideo.value, datobalanceado.value, datosurtidas.value)">
+                                            <option
+                                                *ngFor="let numerobalanceado of numerosbalanceados"
+                                                [selected]="numerobalanceado === seleccionDescuentoBalanceado"
+                                                [value]="numerobalanceado">{{ numerobalanceado }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total>0">
+                                    <td class="text-right"><h5>Total a Pagar --&gt;</h5></td>
+                                    <td class="text-right" colspan="4"><h3>{{(factura.total - factura.descuento) | number:'1.2-2'}}</h3></td>
+                                    <td class="text-center"><h5> Bs.</h5></td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total>0">
+                                    <td class="text-right"><h5>Tipo pago --&gt;</h5></td>
+                                    <td class="text-right" colspan="5">
+                                        <select class="custom-select mr-1" formControlName="idmetodopagosin" [class.is-invalid]="f.idmetodopagosin.errors && f.idmetodopagosin.touched" disabled>
+                                            <option *ngFor="let _metodopagosin of metodospagossin" value="{{_metodopagosin.idmetodopagosin}}">{{_metodopagosin.metodopagosin}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total>0">
+                                    <td class="text-right"><h5>Efectivo --&gt;</h5></td>
+                                    <td class="text-right" colspan="4">
+                                        <input type="number" class="form-control form-control-lg" formControlName="efectivo" (keyup)="fcambioefectivo($event)" [class.is-invalid]="f.efectivo.errors && f.efectivo.touched" />
+                                    </td>
+                                    <td class="text-center"><h5> Bs.</h5></td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total>0">
+                                    <td class="text-right"><h5>Cambio --&gt;</h5></td>
+                                    <td class="text-right" colspan="4"><h3>{{factura.cambio | number:'1.2-2'}}</h3></td>
+                                    <td class="text-center"><h5> Bs.</h5></td>
+                                </tr>
+                                <tr class="table-secondary" *ngIf="factura.total===0">
+                                    <td class="text-center" colspan="6"><h5>Sin productos</h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-center" *ngIf="factura.efectivo>=(factura.total-factura.descuento) && factura.total>0">
+                            <button type="submit" class="btn btn-success btn-block" (click)="fpagar()" [disabled]="!formularioventa.valid">
+                                <i class="fa fa-money"></i> Pagar
+                            </button>
+                        </div>
+
+                    </form>
+                    <hr>
+                    <table class="table table-sm" *ngIf="facturas">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Nro</th>
+                                <th class="text-center">Cliente</th>
+                                <th class="text-center">Total</th>
+                                <th class="text-center">Descuento</th>
+                                <th class="text-center">Total a Pagar</th>
+                                <th class="text-center">Codigo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let _item of facturas; let i = index " [ngClass]="{
+                                    'table-success': _item.codigo==908 || _item.codigo==907,
+                                    'table-danger': _item.codigo==905
+                                }"
+                            >
+                                <td class="text-center">{{i+1}}</td>
+                                <td class="text-left">{{_item.cliente}}</td>
+                                <td class="text-right">{{_item.total| number:'1.2-2'}}</td>
+                                <td class="text-right">{{_item.descuento| number:'1.2-2'}}</td>
+                                <td class="text-right">{{(_item.total - _item.descuento)| number:'1.2-2'}}</td>
+                                <td class="text-center">{{_item.codigo}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-3 col-xl-3 d-none d-lg-block d-xl-block" style="overflow-y: scroll; height: 750px">
+            <div class="row">
+                <div class="col-md-3 col-sm-1" *ngFor="let _item of productospanel2; let i = index ">
+                    <div class="producto-grilla">
+                        <div class="producto-imagen">
+                            <a (click)="fadicionar(_item.idproducto)">
+                                <img [src]="rutaProducto+_item.enlaceproducto"/>
+                            </a>
+                            <span class="producto-etiqueta">{{_item.preciounitario}} Bs</span>
+                        </div>
+                        <div class="producto-contenido">
+                            <h5 class="titulo">{{_item.producto}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #cantidad>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <label>Cantidad </label>
+                <input type="number" class="form-control" value="{{detalle.cantidad}}" #valorcantidad/>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success m-2" (click)="faceptarcantidad(valorcantidad.value)">
+                <i class="fa fa-save"></i> Aceptar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #nuevocliente>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"><i class="fa fa-edit"></i> Nuevo Cliente</h4>
+    </div>
+
+    <div class="modal-body">
+        <p class="text-info">Estimado grupo Los campos remarcados con * (Asterisco) son necesarios.</p>
+        <form [formGroup]="formulariocliente" (ngSubmit)="faceptarcliente()">
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label>Cliente <span class="text-danger"><b>*</b></span></label>
+                        <input type="text" class="form-control" formControlName="cliente" [class.is-invalid]="g.cliente.errors && g.cliente.touched" />
+                        <small *ngIf="g.cliente.errors && g.cliente.touched" class="text-danger">
+                            El dato es obligatorio
+                        </small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Documento <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="numerodocumento" [class.is-invalid]="g.numerodocumento.errors && g.numerodocumento.touched" />
+                            <small *ngIf="g.numerodocumento.errors && g.numerodocumento.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Complemento <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="complemento" [class.is-invalid]="g.complemento.errors && g.complemento.touched" />
+                            <small *ngIf="g.complemento.errors && g.complemento.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Documento <span class="text-danger"><b>*</b></span></label>
+                            <select class="custom-select mr-1" formControlName="iddocumentoidentidadsin" [class.is-invalid]="g.iddocumentoidentidadsin.errors && g.iddocumentoidentidadsin.touched">
+                                <option *ngFor="let _documentoidentidadsin of documentosidentidadessin" value="{{_documentoidentidadsin.iddocumentoidentidadsin}}">{{_documentoidentidadsin.documentoidentidadsin}}</option>
+                            </select>
+                            <small *ngIf="g.numerodocumento.errors && g.numerodocumento.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Celular <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="celular" [class.is-invalid]="g.celular.errors && g.celular.touched" />
+                            <small *ngIf="g.celular.errors && g.celular.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label>Correo electrónico <span class="text-danger"><b>*</b></span></label>
+                            <input type="text" class="form-control" formControlName="correoelectronico" [class.is-invalid]="g.correoelectronico.errors && g.correoelectronico.touched" />
+                            <small *ngIf="g.correoelectronico.errors && g.correoelectronico.touched" class="text-danger">
+                                El dato es obligatorio
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success m-2" [disabled]="!formulariocliente.valid">
+                <i class="fa fa-save"></i> Grabar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #producto>
+    <div class="modal-body">
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Buscar producto <span class="text-danger"><b>*</b></span></label>
+                <input type="text" class="form-control" #codigocorto (change)="fbuscarproducto(codigocorto.value)"/>
+                <h5 class="text-center" *ngIf="datoproducto">{{datoproducto.producto}}</h5>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label>Cantidad Cajas<span class="text-danger"><b>*</b></span></label>
+                <input type="number" class="form-control" #cantidadpaquete value="0"/>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label>Cantidad Paquete<span class="text-danger"><b>*</b></span></label>
+                <input type="number" class="form-control" #cantidadunidad value="0"/>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success m-2" (click)="fadicionarproducto(datoproducto.idproducto, cantidadpaquete.value, cantidadunidad.value)" (click)="codigocorto.value=''; cantidadpaquete.value='0'; cantidadunidad.value='0'; codigocorto.focus">
+                <i class="fa fa-plus"></i> Agregar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="fcancelar()">
+                <i class="fa fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</ng-template>

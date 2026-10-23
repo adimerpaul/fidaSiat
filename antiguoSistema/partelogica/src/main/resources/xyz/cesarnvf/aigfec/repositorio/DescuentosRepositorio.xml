@@ -1,0 +1,50 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.DescuentosRepositorio">
+
+    <select id="obtenerTodos" resultType="Descuentos">
+        select iddescuento, descuento, fecha, cantidadinicial, cantidadfinal, porcentaje, idgrupo, idproducto, idcliente, opcion
+        from facturacion.descuentos
+        order by iddescuento
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Descuentos">
+        select iddescuento, descuento, fecha, cantidadinicial, cantidadfinal, porcentaje, idgrupo, idproducto, idcliente, opcion
+        from facturacion.descuentos
+        where concat(descuento) ilike '%'||#{termino}||'%'
+        order by iddescuento
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(iddescuento)
+        from facturacion.descuentos
+        where concat(descuento) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Descuentos">
+        select iddescuento, descuento, fecha, cantidadinicial, cantidadfinal, porcentaje, idgrupo, idproducto, idcliente, opcion
+        from facturacion.descuentos
+        where iddescuento=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Descuentos" keyProperty="iddescuento" keyColumn="iddescuento">
+        insert into facturacion.descuentos(descuento, fecha, cantidadinicial, cantidadfinal, porcentaje, idgrupo, idproducto, idcliente, opcion) values
+        (#{descuento}, #{fecha}, #{cantidadinicial}, #{cantidadfinal}, #{porcentaje}, #{idgrupo}, #{idproducto}, #{idcliente}, #{opcion})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.descuentos set descuento=#{descuento}, fecha=#{fecha}, cantidadinicial=#{cantidadinicial}, cantidadfinal=#{cantidadfinal}, porcentaje=#{porcentaje}, idgrupo=#{idgrupo}, idproducto=#{idproducto}, idcliente=#{idcliente}, opcion=#{opcion}
+        where iddescuento=#{iddescuento}
+    </update>
+
+    <delete id="borrar">
+        delete
+        from facturacion.descuentos
+        where iddescuento=#{id}
+    </delete>
+
+</mapper>

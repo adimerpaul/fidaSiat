@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.MetodospagossinRepositorio">
+
+    <select id="obtenerTodos" resultType="Metodospagossin">
+        select idmetodopagosin, codigosin, metodopagosin
+        from facturacion.metodospagossin
+        order by codigosin
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Metodospagossin">
+        select idmetodopagosin, codigosin, metodopagosin
+        from facturacion.metodospagossin
+        where concat(metodopagosin) ilike '%'||#{termino}||'%'
+        order by codigosin
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idmetodopagosin)
+        from facturacion.metodospagossin
+        where concat(metodopagosin) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Metodospagossin">
+        select idmetodopagosin, codigosin, metodopagosin
+        from facturacion.metodospagossin
+        where idmetodopagosin=#{id}
+    </select>
+
+    <select id="verificarCodigosin" resultType="Metodospagossin">
+        select idmetodopagosin, codigosin, metodopagosin
+        from facturacion.metodospagossin
+        where codigosin=#{codigosin}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Metodospagossin" keyProperty="idmetodopagosin" keyColumn="idmetodopagosin">
+        insert into facturacion.metodospagossin(codigosin, metodopagosin) values
+        (#{codigosin}, #{metodopagosin})
+    </insert>
+
+</mapper>

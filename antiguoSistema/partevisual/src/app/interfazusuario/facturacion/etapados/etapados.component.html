@@ -1,0 +1,1110 @@
+<app-cabeceratitulos [titulo]="'Etapa dos'" [descripcion]="'Etapa dos de Facturación'" [icono]="'cogs'" [opcion]="'Etapa dos'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+
+            <div class="row">
+                <div class="col-3">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" id="vlis1-tab" data-toggle="pill" href="#vlis1" role="tab" aria-controls="vlis1" aria-selected="true">LISTADO TOTAL DE ACTIVIDADES</a>
+                        <a class="nav-link" id="vlis2-tab" data-toggle="pill" href="#vlis2" role="tab" aria-controls="vlis2" aria-selected="false">FECHA Y HORA ACTUAL</a>
+                        <a class="nav-link" id="vlis3-tab" data-toggle="pill" href="#vlis3" role="tab" aria-controls="vlis3" aria-selected="false">LISTADO TOTAL DE ACTIVIDADES DOCUMENTO SECTOR</a>
+                        <a class="nav-link" id="vlis4-tab" data-toggle="pill" href="#vlis4" role="tab" aria-controls="vlis4" aria-selected="false">LISTADO TOTAL DE LEYENDAS DE FACTURAS</a>
+                        <a class="nav-link" id="vlis5-tab" data-toggle="pill" href="#vlis5" role="tab" aria-controls="vlis5" aria-selected="false">LISTADO TOTAL DE MENSAJES DE SERVICIOS</a>
+                        <a class="nav-link" id="vlis6-tab" data-toggle="pill" href="#vlis6" role="tab" aria-controls="vlis6" aria-selected="false">LISTADO TOTAL DE PRODUCTOS Y SERVICIOS</a>
+                        <a class="nav-link" id="vlis7-tab" data-toggle="pill" href="#vlis7" role="tab" aria-controls="vlis7" aria-selected="false">LISTADO TOTAL DE EVENTOS SIGNIFICATIVOS</a>
+                        <a class="nav-link" id="vlis8-tab" data-toggle="pill" href="#vlis8" role="tab" aria-controls="vlis8" aria-selected="false">LISTADO TOTAL DE MOTIVO DE ANULACIÓN</a>
+                        <a class="nav-link" id="vlis9-tab" data-toggle="pill" href="#vlis9" role="tab" aria-controls="vlis9" aria-selected="false">LISTADO TOTAL DE PAÍSES</a>
+                        <a class="nav-link" id="vlis10-tab" data-toggle="pill" href="#vlis10" role="tab" aria-controls="vlis10" aria-selected="false">LISTADO TOTAL DE TIPOS DE DOCUMENTO DE IDENTIDAD</a>
+                        <a class="nav-link" id="vlis11-tab" data-toggle="pill" href="#vlis11" role="tab" aria-controls="vlis11" aria-selected="false">LISTADO TOTAL DE TIPOS DE DOCUMENTO SECTOR</a>
+                        <a class="nav-link" id="vlis12-tab" data-toggle="pill" href="#vlis12" role="tab" aria-controls="vlis12" aria-selected="false">LISTADO TOTAL DE TIPO EMISIÓN</a>
+                        <a class="nav-link" id="vlis13-tab" data-toggle="pill" href="#vlis13" role="tab" aria-controls="vlis13" aria-selected="false">LISTADO TOTAL DE TIPO HABITACIÓN</a>
+                        <a class="nav-link" id="vlis14-tab" data-toggle="pill" href="#vlis14" role="tab" aria-controls="vlis14" aria-selected="false">LISTADO TOTAL DE MÉTODO DE PAGO</a>
+                        <a class="nav-link" id="vlis15-tab" data-toggle="pill" href="#vlis15" role="tab" aria-controls="vlis15" aria-selected="false">LISTADO TOTAL DE TIPOS DE MONEDA</a>
+                        <a class="nav-link" id="vlis16-tab" data-toggle="pill" href="#vlis16" role="tab" aria-controls="vlis16" aria-selected="false">LISTADO TOTAL DE TIPOS DE PUNTO DE VENTA</a>
+                        <a class="nav-link" id="vlis17-tab" data-toggle="pill" href="#vlis17" role="tab" aria-controls="vlis17" aria-selected="false">LISTADO TOTAL DE TIPOS DE FACTURA</a>
+                        <a class="nav-link" id="vlis18-tab" data-toggle="pill" href="#vlis18" role="tab" aria-controls="vlis18" aria-selected="false">LISTADO TOTAL DE UNIDAD DE MEDIDA</a>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="vlis1" role="tabpanel" aria-labelledby="vlis1-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenercodigossinActividades(1)" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Obtener Codigo SIN </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerActividades(1)" data-toggle="tooltip" data-placement="top" title="Actividad Punto 0"><i class="fa fa-link"></i> Actividades Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerActividades(1)" data-toggle="tooltip" data-placement="top" title="Actividad Punto 1"><i class="fa fa-link"></i> Actividades Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaActividades">Obteniendo Actividades punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaActividades"><span *ngFor="let _item of respuestaActividades.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaActividades">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Caeb</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                                <th class="text-center align-middle">TipoActividad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaActividades.actividades; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoCaeb}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                                <td class="text-left">{{_item.tipoActividad}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis2" role="tabpanel" aria-labelledby="vlis2-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerFechahora(0)" data-toggle="tooltip" data-placement="top" title="Fecha punto 0"><i class="fa fa-link"></i> Fecha Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerFechahora(1)" data-toggle="tooltip" data-placement="top" title="Fecha punto 1"><i class="fa fa-link"></i> Fecha Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaFechas">Obteniendo Fecha punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaFechas"><span *ngFor="let _item of respuestaFechas.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaFechas">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center">{{1}}</td>
+                                                <td class="text-center">{{respuestaFechas.fechahora}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis3" role="tabpanel" aria-labelledby="vlis3-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerActividadesSector(0)" data-toggle="tooltip" data-placement="top" title="Actividad Sector Punto 0"><i class="fa fa-link"></i> Actividades Sector Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerActividadesSector(1)" data-toggle="tooltip" data-placement="top" title="Actividad Sector Punto 1"><i class="fa fa-link"></i> Actividades Sector Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaActividadessector">Obteniendo Actividades Sector punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaActividadessector"><span *ngFor="let _item of respuestaActividadessector.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaActividadessector">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Caeb</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                                <th class="text-center align-middle">TipoActividad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaActividadessector.actividadessector; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoActividad}}</td>
+                                                <td class="text-left">{{_item.codigoDocumentoSector}}</td>
+                                                <td class="text-left">{{_item.tipoDocumentoSector}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis4" role="tabpanel" aria-labelledby="vlis4-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenercodigossinLeyendas(0)" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Obtener Codigo SIN </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerLeyendas(0)" data-toggle="tooltip" data-placement="top" title="Leyendas Punto 0"><i class="fa fa-link"></i> Leyendas Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerLeyendas(1)" data-toggle="tooltip" data-placement="top" title="Leyendas Punto 1"><i class="fa fa-link"></i> Leyendas Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaLeyendas">Obteniendo Leyendas punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaLeyendas"><span *ngFor="let _item of respuestaLeyendas.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaLeyendas">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Actividad</th>
+                                                <th class="text-center align-middle">Descripcion Leyenda</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaLeyendas.leyendas; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoActividad}}</td>
+                                                <td class="text-left">{{_item.descripcionLeyenda}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis5" role="tabpanel" aria-labelledby="vlis5-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerMensajesServicio(0)" data-toggle="tooltip" data-placement="top" title="Mensajes Servicio Punto 0"><i class="fa fa-link"></i> Mensajes Servicio Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerMensajesServicio(1)" data-toggle="tooltip" data-placement="top" title="Mensajes Servicio Punto 1"><i class="fa fa-link"></i> Mensajes Servicio Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaMensajesservicio">Obteniendo Mensajes Servicio punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaMensajesservicio"><span *ngFor="let _item of respuestaMensajesservicio.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaMensajesservicio">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaMensajesservicio.mensajesservicio; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis6" role="tabpanel" aria-labelledby="vlis6-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenercodigossinProductosSIN(0)" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Obtener Codigo SIN </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerProductos(0)" data-toggle="tooltip" data-placement="top" title="Productos Punto 0"><i class="fa fa-link"></i> Productos Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerProductos(1)" data-toggle="tooltip" data-placement="top" title="Productos Punto 1"><i class="fa fa-link"></i> Productos Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaProductos">Obteniendo Productos punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaProductos"><span *ngFor="let _item of respuestaProductos.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaProductos">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Actividad</th>
+                                                <th class="text-center align-middle">Codigo Producto</th>
+                                                <th class="text-center align-middle">Descripcion Producto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaProductos.productos; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoActividad}}</td>
+                                                <td class="text-center">{{_item.codigoProducto}}</td>
+                                                <td class="text-left">{{_item.descripcionProducto}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis7" role="tabpanel" aria-labelledby="vlis7-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerEventosSignificativos(0)" data-toggle="tooltip" data-placement="top" title="Eventos Significativos Punto 0"><i class="fa fa-link"></i> Eventos Significativos Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerEventosSignificativos(1)" data-toggle="tooltip" data-placement="top" title="Eventos Significativos Punto 1"><i class="fa fa-link"></i> Eventos Significativos Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaEventossignificativos">Obteniendo Eventos Significativos punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaEventossignificativos"><span *ngFor="let _item of respuestaEventossignificativos.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaEventossignificativos">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaEventossignificativos.eventossignificativos; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis8" role="tabpanel" aria-labelledby="vlis8-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerMotivoAnulacion(0)" data-toggle="tooltip" data-placement="top" title="Motivo Anulacion Punto 0"><i class="fa fa-link"></i> Motivo Anulacion Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerMotivoAnulacion(1)" data-toggle="tooltip" data-placement="top" title="Motivo Anulacion Punto 1"><i class="fa fa-link"></i> Motivo Anulacion Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaMotivoanulacion">Obteniendo Motivo Anulacion punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaMotivoanulacion"><span *ngFor="let _item of respuestaMotivoanulacion.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaMotivoanulacion">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaMotivoanulacion.anulaciones; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis9" role="tabpanel" aria-labelledby="vlis9-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerPaises(0)" data-toggle="tooltip" data-placement="top" title="Paises Punto 0"><i class="fa fa-link"></i> Paises Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerPaises(1)" data-toggle="tooltip" data-placement="top" title="Paises Punto 1"><i class="fa fa-link"></i> Paises Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaPaises">Obteniendo Paises punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaPaises"><span *ngFor="let _item of respuestaPaises.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaPaises">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaPaises.paises; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis10" role="tabpanel" aria-labelledby="vlis10-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoDocumentoIdentidad(0)" data-toggle="tooltip" data-placement="top" title="Tipo Documento Identidad Punto 0"><i class="fa fa-link"></i> Tipo Documento Identidad Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoDocumentoIdentidad(1)" data-toggle="tooltip" data-placement="top" title="Tipo Documento Identidad Punto 1"><i class="fa fa-link"></i> Tipo Documento Identidad Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposdocumentosidentidad">Obteniendo Tipo Documento Identidad punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposdocumentosidentidad"><span *ngFor="let _item of respuestaTiposdocumentosidentidad.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposdocumentosidentidad">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposdocumentosidentidad.tiposdocumentosidentidad; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis11" role="tabpanel" aria-labelledby="vlis11-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoDocumentosector(0)" data-toggle="tooltip" data-placement="top" title="Tipo Documento Sector Punto 0"><i class="fa fa-link"></i> Tipo Documento Sector Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoDocumentosector(1)" data-toggle="tooltip" data-placement="top" title="Tipo Documento Sector Punto 1"><i class="fa fa-link"></i> Tipo Documento Sector Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposdocumentossector">Obteniendo Tipo Documento Sector punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposdocumentossector"><span *ngFor="let _item of respuestaTiposdocumentossector.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposdocumentossector">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposdocumentossector.tiposdocumentossector; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis12" role="tabpanel" aria-labelledby="vlis12-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoEmision(0)" data-toggle="tooltip" data-placement="top" title="Tipo Emision Sector Punto 0"><i class="fa fa-link"></i> Tipo Emision Sector Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoEmision(1)" data-toggle="tooltip" data-placement="top" title="Tipo Emision Sector Punto 1"><i class="fa fa-link"></i> Tipo Emision Sector Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposemision">Obteniendo Tipo Emision Sector punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposemision"><span *ngFor="let _item of respuestaTiposemision.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposemision">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposemision.tiposemision; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis13" role="tabpanel" aria-labelledby="vlis13-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoHabitacion(0)" data-toggle="tooltip" data-placement="top" title="Tipo Habitacion Punto 0"><i class="fa fa-link"></i> Tipo Habitacion Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoHabitacion(1)" data-toggle="tooltip" data-placement="top" title="Tipo Habitacion Punto 1"><i class="fa fa-link"></i> Tipo Habitacion Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposhabitacion">Obteniendo Tipo Habitacion punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposhabitacion"><span *ngFor="let _item of respuestaTiposhabitacion.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposhabitacion">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposhabitacion.tiposhabitacion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis14" role="tabpanel" aria-labelledby="vlis14-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoMetodoPago(0)" data-toggle="tooltip" data-placement="top" title="Tipo Metodo Pago Punto 0"><i class="fa fa-link"></i> Tipo Metodo Pago Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoMetodoPago(1)" data-toggle="tooltip" data-placement="top" title="Tipo Metodo Pago Punto 1"><i class="fa fa-link"></i> Tipo Metodo Pago Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposmetodopago">Obteniendo Tipo Metodo Pago punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposmetodopago"><span *ngFor="let _item of respuestaTiposmetodopago.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposmetodopago">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposmetodopago.tiposmetodopago; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis15" role="tabpanel" aria-labelledby="vlis15-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoMoneda(0)" data-toggle="tooltip" data-placement="top" title="Tipo Moneda Punto 0"><i class="fa fa-link"></i> Tipo Moneda Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoMoneda(1)" data-toggle="tooltip" data-placement="top" title="Tipo Moneda Punto 1"><i class="fa fa-link"></i> Tipo Moneda Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposmoneda">Obteniendo Tipo Moneda punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposmoneda"><span *ngFor="let _item of respuestaTiposmoneda.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposmoneda">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposmoneda.tiposmoneda; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis16" role="tabpanel" aria-labelledby="vlis16-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoPuntoVenta(0)" data-toggle="tooltip" data-placement="top" title="Tipo Punto Venta Punto 0"><i class="fa fa-link"></i> Tipo Punto Venta Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoPuntoVenta(1)" data-toggle="tooltip" data-placement="top" title="Tipo Punto Venta Punto 1"><i class="fa fa-link"></i> Tipo Punto Venta Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTipospuntoventa">Obteniendo Tipo Punto Venta punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTipospuntoventa"><span *ngFor="let _item of respuestaTipospuntoventa.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTipospuntoventa">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTipospuntoventa.tipospuntoventa; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis17" role="tabpanel" aria-labelledby="vlis17-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoFactura(0)" data-toggle="tooltip" data-placement="top" title="Tipo Factura Punto 0"><i class="fa fa-link"></i> Tipo Factura Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoFactura(1)" data-toggle="tooltip" data-placement="top" title="Tipo Factura Punto 1"><i class="fa fa-link"></i> Tipo Factura Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposfactura">Obteniendo Tipo Factura punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposfactura"><span *ngFor="let _item of respuestaTiposfactura.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposfactura">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposfactura.tiposfactura; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="vlis18" role="tabpanel" aria-labelledby="vlis18-tab">
+
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Verificar Conexion </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenercodigossinUnidadesMedidas(0)" data-toggle="tooltip" data-placement="top" title="Verifica Conexion"><i class="fa fa-link"></i> Obtener Codigo SIN </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of conexion; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigo}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <div class="input-group justify-content-end">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoUnidadMedida(0)" data-toggle="tooltip" data-placement="top" title="Unidad de Medida Punto 0"><i class="fa fa-link"></i> Unidad de Medida Punto 0 </button>
+                                            <button class="btn btn-primary mr-2" type="button" (click)="fobtenerTipoUnidadMedida(1)" data-toggle="tooltip" data-placement="top" title="Unidad de Medida Punto 1"><i class="fa fa-link"></i> Unidad de Medida Punto 1 </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-center" *ngIf="respuestaTiposunidadmedida">Obteniendo Unidad de Medida punto venta {{punto}}</h3>
+                                    <p *ngIf="respuestaTiposunidadmedida"><span *ngFor="let _item of respuestaTiposunidadmedida.mensajes; let i = index ">
+                                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                                    </span></p>
+                                    <table class="table table-sm table-hover" *ngIf="respuestaTiposunidadmedida">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Nro.</th>
+                                                <th class="text-center align-middle">Codigo Clasificador</th>
+                                                <th class="text-center align-middle">Descripcion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let _item of respuestaTiposunidadmedida.tiposunidadmedida; let i = index ">
+                                                <td class="text-center">{{i+1}}</td>
+                                                <td class="text-center">{{_item.codigoClasificador}}</td>
+                                                <td class="text-left">{{_item.descripcion}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

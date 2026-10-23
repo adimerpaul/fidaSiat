@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.BitacorasRepositorio">
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Bitacoras">
+        select idbitacora, idusuario, bitacora, bitacoras.fecha, hora
+        from seguridad.bitacoras join seguridad.usuarios using(idusuario)
+        where concat(bitacora, usuario) ilike '%'||#{termino}||'%'
+        order by fecha desc, hora desc
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idbitacora)
+        from seguridad.bitacoras join seguridad.usuarios using(idusuario)
+        where concat(bitacora, usuario) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Bitacoras">
+        select idbitacora, idusuario, bitacora, fecha, hora
+        from seguridad.bitacoras
+        where idbitacora=#{id}
+    </select>
+
+    <insert id="adicionar">
+        insert into seguridad.bitacoras(idusuario, bitacora) values
+        (#{idusuario}, #{bitacora})
+    </insert>
+
+</mapper>

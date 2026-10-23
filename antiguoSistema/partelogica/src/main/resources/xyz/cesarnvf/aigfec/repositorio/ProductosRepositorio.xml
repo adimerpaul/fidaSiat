@@ -1,0 +1,64 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.ProductosRepositorio">
+
+    <select id="obtenerTodos" resultType="Productos">
+        select idproducto, idproductosin, idgrupo, idunidadmedida, producto, cantidadcaja, preciounitario, enlaceproducto, habilitado, codigocorto
+        from facturacion.productos
+        order by idgrupo, producto
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Productos">
+        select idproducto, idproductosin, idgrupo, idunidadmedida, producto, cantidadcaja, preciounitario, enlaceproducto, habilitado, codigocorto
+        from facturacion.productos
+        where concat(producto) ilike '%'||#{termino}||'%'
+        order by idgrupo, producto
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(idproducto)
+        from facturacion.productos
+        where concat(producto) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Productos">
+        select idproducto, idproductosin, idgrupo, idunidadmedida, producto, cantidadcaja, preciounitario, enlaceproducto, habilitado, codigocorto
+        from facturacion.productos
+        where idproducto=#{id}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Productos" keyProperty="idproducto" keyColumn="idproducto">
+        insert into facturacion.productos(idproductosin, idgrupo, idunidadmedida, , producto, cantidadcaja, preciounitario, enlaceproducto, habilitado, codigocorto) values
+        (#{idproductosin}, #{idgrupo}, #{idunidadmedida}, #{producto}, #{cantidadcaja}, #{preciounitario}, #{enlaceproducto}, #{habilitado}, #{codigocorto})
+    </insert>
+
+    <update id="modificar">
+        update facturacion.productos set idproductosin=#{idproductosin}, idgrupo=#{idgrupo}, idunidadmedida=#{idunidadmedida}, producto=#{producto}, cantidadcaja=#{cantidadcaja}, preciounitario=#{preciounitario}, enlaceproducto=#{enlaceproducto}, habilitado=#{habilitado}, codigocorto=#{codigocorto}
+        where idproducto=#{idproducto}
+    </update>
+
+    <select id="obtenerPorIdgrupoConPaginacion" resultType="Productos">
+        select idproducto, idproductosin, idgrupo, idunidadmedida, producto, cantidadcaja, preciounitario, enlaceproducto, habilitado, codigocorto
+        from facturacion.productos
+        where habilitado and idgrupo=#{idgrupo}
+        order by producto
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidadPorIdgrupo" resultType="Integer">
+        select count(idproducto)
+        from facturacion.productos
+        where habilitado and idgrupo=#{idgrupo}
+    </select>
+
+    <select id="obtenerPorCodigocorto" resultType="Productos">
+        select idproducto, idproductosin, idgrupo, idunidadmedida, producto, cantidadcaja, preciounitario, enlaceproducto, habilitado, codigocorto
+        from facturacion.productos
+        where habilitado and codigocorto=#{codigocorto}
+    </select>
+
+</mapper>

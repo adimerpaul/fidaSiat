@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.cesarnvf.aigfec.repositorio.DocumentosidentidadessinRepositorio">
+
+    <select id="obtenerTodos" resultType="Documentosidentidadessin">
+        select iddocumentoidentidadsin, codigosin, documentoidentidadsin
+        from facturacion.documentosidentidadessin
+        order by iddocumentoidentidadsin
+    </select>
+
+    <select id="obtenerPorTerminoConPaginacion" resultType="Documentosidentidadessin">
+        select iddocumentoidentidadsin, codigosin, documentoidentidadsin
+        from facturacion.documentosidentidadessin
+        where concat(documentoidentidadsin) ilike '%'||#{termino}||'%'
+        order by codigosin
+        limit #{cantidad} offset #{pagina}
+    </select>
+
+    <select id="obtenerCantidad" resultType="Integer">
+        select count(iddocumentoidentidadsin)
+        from facturacion.documentosidentidadessin
+        where concat(documentoidentidadsin) ilike '%'||#{termino}||'%'
+    </select>
+
+    <select id="obtenerPorId" resultType="Documentosidentidadessin">
+        select iddocumentoidentidadsin, codigosin, documentoidentidadsin
+        from facturacion.documentosidentidadessin
+        where iddocumentoidentidadsin=#{id}
+    </select>
+
+    <select id="verificarCodigosin" resultType="Documentosidentidadessin">
+        select iddocumentoidentidadsin, codigosin, documentoidentidadsin
+        from facturacion.documentosidentidadessin
+        where codigosin=#{codigosin}
+    </select>
+
+    <insert id="adicionar" useGeneratedKeys="true" parameterType="Documentosidentidadessin" keyProperty="iddocumentoidentidadsin" keyColumn="iddocumentoidentidadsin">
+        insert into facturacion.documentosidentidadessin(codigosin, documentoidentidadsin) values
+        (#{codigosin}, #{documentoidentidadsin})
+    </insert>
+
+</mapper>

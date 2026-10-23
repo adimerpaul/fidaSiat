@@ -1,0 +1,79 @@
+<app-cabeceratitulos [titulo]="'Etapa tres'" [descripcion]="'Etapa tres de Facturación'" [icono]="'cogs'" [opcion]="'Etapa tres'">
+</app-cabeceratitulos>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile text-center">
+
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="fverificarConexion()" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-link"></i> Verificar Conexion </button>
+                        </div>
+                    </div>
+                    <h3 class="text-center" *ngIf="conexion?.length">Verificando Conexion</h3>
+                    <table class="table table-sm table-hover" *ngIf="conexion?.length">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">Nro.</th>
+                                <th class="text-center align-middle">Codigo</th>
+                                <th class="text-center align-middle">Descripcion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let _item of conexion; let i = index ">
+                                <td class="text-center">{{i+1}}</td>
+                                <td class="text-center">{{_item.codigo}}</td>
+                                <td class="text-left">{{_item.descripcion}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="input-group justify-content-end">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary mr-2" type="button" (click)="fcufd(0)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-link"></i> CUFD Punto 0 </button>
+                            <button class="btn btn-primary mr-2" type="button" (click)="fcufd(1)" data-toggle="tooltip" data-placement="top" title="Agregar dato"><i class="fa fa-link"></i> CUFD Punto 1 </button>
+                        </div>
+                    </div>
+                    <h3 class="text-center" *ngIf="respuesta">Obteniendo CUI punto venta {{punto}}</h3>
+                    <p *ngIf="respuesta"><span *ngFor="let _item of respuesta.mensajes; let i = index ">
+                        {{i+1}} {{_item.codigo}} {{_item.descripcion}}<br>
+                    </span></p>
+                    <table class="table table-sm table-hover" *ngIf="respuesta">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">Nro.</th>
+                                <th class="text-center align-middle">Codigo</th>
+                                <th class="text-center align-middle">Codigo Control</th>
+                                <th class="text-center align-middle">Direccion</th>
+                                <th class="text-center align-middle">Fecha Vigencia</th>
+                                <th class="text-center align-middle">Vigencia</th>
+                                <th class="text-center align-middle">Operaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center">{{1}}</td>
+                                <td class="text-center">{{respuesta.codigo}}</td>
+                                <td class="text-center">{{respuesta.codigocontrol}}</td>
+                                <td class="text-center">{{respuesta.codigodireccion}}</td>
+                                <td class="text-left">{{respuesta.fechavigencia}}</td>
+                                <td class="text-left">
+                                    <span class="badge badge-success" *ngIf="respuesta.vigencia">VIGENTE</span>
+                                    <span class="badge badge-danger" *ngIf="respuesta.vigencia==false">NO VIGENTE</span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-primary mr-2" type="button" (click)="fregistracufd(punto)" data-toggle="tooltip" data-placement="top" title="Actualizar dato"><i class="fa fa-edit"></i> Registrar CUFD Punto {{punto}} </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

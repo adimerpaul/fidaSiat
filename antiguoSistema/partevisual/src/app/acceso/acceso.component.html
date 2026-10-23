@@ -1,0 +1,59 @@
+<section class="material-half-bg">
+  <div class="cover"></div>
+</section>
+<section class="login-content">
+  <div class="login-box" *ngIf="sw===1">
+    <form class="login-form" [formGroup]="formulariousuario" (ngSubmit)="faceptarusuario()">
+      <div class="logo" style="text-align: center;">
+        <img src="assets/imagenes/logo.png" class="img-fluid" />
+      </div>
+      <h5 class="login-head">
+        Acceso al Sistema
+      </h5>
+      <div class="form-group">
+        <label class="control-label"><i class="fa fa-lg fa-fw fa-user"></i> USUARIO DEL SISTEMA </label>
+        <input class="form-control" type="text" placeholder="Usuario..." autofocus formControlName="usuario" [class.is-invalid]="f.usuario.errors && f.usuario.touched"/>
+        <small *ngIf="f.usuario.errors && f.usuario.touched" class="text-danger">
+        El dato es obligatorio
+        </small>
+
+      </div>
+      <div class="form-group btn-container">
+        <button class="btn btn-block" type="submit" [ngClass]="{ 'btn-primary': !estadousuario }" [disabled]="!formulariousuario.valid">
+          <span *ngIf="!estadousuario"><i class="fa fa-sign-in fa-lg fa-fw"></i> Siguiente</span>
+          <span *ngIf="estadousuario"><i class="fa fa-refresh fa-spin"></i> Verificando</span>
+        </button>
+        <p class="text-center mt-3">
+          <small>&copy; {{ gestion }} {{nombreapp}} versión {{version}}</small>
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <div class="login-box" *ngIf="sw===2">
+    <form class="login-form" [formGroup]="formularioclave" (ngSubmit)="faceptarclave()">
+      <div class="logo" style="text-align: center;">
+        <img src="assets/imagenes/logo.png" class="img-fluid" />
+      </div>
+      <h5 class="login-head">
+        Acceso al Sistema
+      </h5>
+      <div class="form-group">
+        <label class="control-label"><i class="fa fa-lg fa-fw fa-key"></i> CLAVE DE ACCESO</label>
+        <input class="form-control" type="password" placeholder="Clave..." formControlName="clave" [class.is-invalid]="g.clave.errors && g.clave.touched" autofocus/>
+        <small *ngIf="g.clave.errors && g.clave.touched" class="text-danger">
+        El dato es obligatorio
+        </small>
+      </div>
+      <div class="form-group btn-container">
+        <button class="btn btn-block" type="submit" [ngClass]="{ 'btn-primary': !estadoclave }" [disabled]="!formularioclave.valid">
+          <span *ngIf="!estadoclave"><i class="fa fa-sign-in fa-lg fa-fw"></i> Iniciar sesion</span>
+          <span *ngIf="estadoclave"><i class="fa fa-refresh fa-spin"></i> Verificando</span>
+        </button>
+        <p class="text-center mt-3">
+          <small>&copy; {{ gestion }} {{nombreapp}} versión {{version}}</small>
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
