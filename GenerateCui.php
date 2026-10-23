@@ -9,7 +9,7 @@ require_once __DIR__ . '/datos_generales.php';
  * Uso: php GenerateCui.php [codigoPuntoVenta]
  */
 
-$codigoPuntoVenta = (int) ($argv[1] ?? 0);
+$codigoPuntoVenta = 1;
 
 $siat = obtenerDatosSiat($codigoPuntoVenta);
 $cuis = $siat['cuis'];
