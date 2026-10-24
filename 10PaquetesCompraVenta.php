@@ -9,17 +9,17 @@ require_once __DIR__ . '/datos_generales.php';
 
 
 //3573986
-$siat = obtenerDatosSiat(0);
+$siat = obtenerDatosSiat(1);
 $codigoPuntoVenta = $siat['codigoPuntoVenta'];
 $codigoControl = $siat['codigoControl'];
 $cufd = $siat['cufd'];
 $cuis = $siat['cuis'];
 
 
-$cantidad=1;
-$codigoMotivoEvento=2;
+$cantidad=500;
+$codigoMotivoEvento=4;
 $h="15";
-$m="20";
+$m="32";
 $s="00";
 
 //$codigoEvento=3629231;
