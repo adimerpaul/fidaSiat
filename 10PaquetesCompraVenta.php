@@ -9,7 +9,7 @@ require_once __DIR__ . '/datos_generales.php';
 
 
 //3573986
-$siat = obtenerDatosSiat(1);
+$siat = obtenerDatosSiat(0);
 $codigoPuntoVenta = $siat['codigoPuntoVenta'];
 $codigoControl = $siat['codigoControl'];
 $cufd = $siat['cufd'];
@@ -17,9 +17,9 @@ $cuis = $siat['cuis'];
 
 
 $cantidad=1;
-$codigoMotivoEvento=1;
+$codigoMotivoEvento=2;
 $h="15";
-$m="17";
+$m="20";
 $s="00";
 
 //$codigoEvento=3629231;
@@ -96,7 +96,7 @@ for ($y=1;$y<=10;$y++){
         $cuf = $cuf->obtenerCUF($nit, date("Ymd".$h.$m.$s."$miliSegundo"), $codigoSucursal, $codigoModalidad, $codigoEmision, $cdf, $codigoDocumentoSector, $nf, $codigoPuntoVenta);
         $cuf=$cuf.$codigoControl;
         $data="<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<facturaComputarizadaCompraVenta xsi:noNamespaceSchemaLocation='facturaComputarizadaCompraVenta.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+<facturaElectronicaCompraVenta xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='facturaElectronicaCompraVenta.xsd'>
     <cabecera>
         <nitEmisor>$nit</nitEmisor>
         <razonSocialEmisor>$razonSocialEmisor</razonSocialEmisor>
@@ -125,16 +125,14 @@ for ($y=1;$y<=10;$y++){
         <descuentoAdicional>1</descuentoAdicional>
         <codigoExcepcion xsi:nil='true'/>
         <cafc xsi:nil='true'/>
-        <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los
-            servicios que utilices.
-        </leyenda>
+        <leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los productos que consumes.</leyenda>
         <usuario>pperez</usuario>
         <codigoDocumentoSector>1</codigoDocumentoSector>
     </cabecera>
     <detalle>
-        <actividadEconomica>1102200</actividadEconomica>
-        <codigoProductoSin>1000701</codigoProductoSin>
-        <codigoProducto>JN-131231</codigoProducto>
+        <actividadEconomica>472000</actividadEconomica>
+        <codigoProductoSin>99100</codigoProductoSin>
+        <codigoProducto>1004693</codigoProducto>
         <descripcion>JUGO DE NARANJA EN VASO</descripcion>
         <cantidad>1</cantidad>
         <unidadMedida>1</unidadMedida>
@@ -144,7 +142,7 @@ for ($y=1;$y<=10;$y++){
         <numeroSerie>124548</numeroSerie>
         <numeroImei>545454</numeroImei>
     </detalle>
-</facturaComputarizadaCompraVenta>";
+</facturaElectronicaCompraVenta>";
         $xml = new SimpleXMLElement($data);
         $dom = new DOMDocument('1.0');
         $dom->preserveWhiteSpace = false;
@@ -153,11 +151,11 @@ for ($y=1;$y<=10;$y++){
         $nameFile=str_replace(' ', '', microtime());
         $dom->save("archivos/".$nameFile.'.xml');
 
-//        firmar("archivos/".$nameFile.'.xml');
+        firmar("archivos/".$nameFile.'.xml');
 
         $xml = new DOMDocument();
         $xml->load("archivos/".$nameFile.'.xml');
-        if (!$xml->schemaValidate('./facturaComputarizadaCompraVenta.xsd')) {
+        if (!$xml->schemaValidate('./facturaElectronicaCompraVenta.xsd')) {
             echo "invalid";
         }
         else {
@@ -303,7 +301,7 @@ function firmar($fileName){
     If key has a passphrase, set it using
     $objKey->passphrase = '<passphrase>';
     */
-    $objKey->loadKey('key/privatekey.pem', TRUE);
+    $objKey->loadKey('key/privateKey.pem', TRUE);
 
     $objDSig->sign($objKey);
 
