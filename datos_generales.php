@@ -44,6 +44,25 @@ function obtenerUrlSiat(string $servicio, ?int $codigoAmbiente = null): string
 }
 
 /**
+ * Endpoints SOAP V3 (ruta /sfd/), segun la solicitud R-1359 Nro. 9909.
+ * Mismos nombres de servicio que V2: FacturacionCodigos, FacturacionOperaciones,
+ * FacturacionSincronizacion, ServicioFacturacionCompraVenta.
+ * Solo se conoce la ruta piloto; la de produccion aun no esta documentada.
+ */
+function obtenerUrlSiatV3(string $servicio, ?int $codigoAmbiente = null): string
+{
+    if ($codigoAmbiente === null) {
+        $codigoAmbiente = obtenerAmbienteSiat();
+    }
+
+    if ($codigoAmbiente === 1) {
+        throw new RuntimeException('Ruta V3 (/sfd/) de produccion no configurada todavia.');
+    }
+
+    return 'https://pilotosiatservicios.impuestos.gob.bo/sfd/' . $servicio . '?wsdl';
+}
+
+/**
  * Ambiente de la empresa activa, sin exigir que exista un punto de venta.
  */
 function obtenerAmbienteSiat(?string $empresa = null): int
@@ -95,19 +114,23 @@ function obtenerEmpresaSiat(?string $empresa = null): array
                 // PDV 0 = el propio de la sucursal 0, existe sin registrarlo.
                 0 => [
                     'cuis' => '1096986F',
-                    'cufd' => 'UFBQVVDKUpNQU4MjhFQ0M1Q0VFQnxlV09QWUthVE=OEQ3RkYzMTE',
-                    'codigoControl' => '356BF9BF0B4BF74',
-                    'generado' => '2026-10-23 15:14:23',
-                    'vigencia' => '2026-10-24T15:14:22.309-04:00',
+                    'cufd' => 'UFBQVVDKUpNQU4MjhFQ0M1Q0VFQnkmQ2NYWUthVE=OEQ3RkYzMTE',
+                    'codigoControl' => '796FB3941B4BF74',
+                    'generado' => '2026-10-23 23:28:06',
+                    'vigencia' => '2026-10-24T23:28:02.666-04:00',
+                    // 'codigoInterno' = "Codigo Interno SIN" que devuelve el CUFD V3;
+                    // va en <codigoInterno> de las facturas V3. Lo guarda GenerateCufV3.php.
+                    'codigoInterno' => 'C',
                 ],
                 // PDV 1: hay que registrarlo antes con registroPuntoVenta
                 // (ver el comentario al final de GenerateCui.php).
                 1 => [
                     'cuis' => 'B3F92607',
-                    'cufd' => 'UJBQVVDKUpNQU4MjhFQ0M1Q0VFQktKeVFQWUthVE=OEQ3RkYzMTE',
-                    'codigoControl' => '3B257DBF0B4BF74',
-                    'generado' => '2026-10-23 15:16:50',
-                    'vigencia' => '2026-10-24T15:16:50.091-04:00',
+                    'cufd' => 'UJBQVVDKUpNQU4MjhFQ0M1Q0VFQmVuRGNYWUthVE=OEQ3RkYzMTE',
+                    'codigoControl' => '1142C3941B4BF74',
+                    'generado' => '2026-10-23 23:28:07',
+                    'vigencia' => '2026-10-24T23:28:03.393-04:00',
+                    'codigoInterno' => 'C',
                 ],
             ],
         ],
@@ -217,6 +240,7 @@ function obtenerDatosSiat(int $codigoPuntoVenta, ?string $empresa = null): array
         'codigoControl' => $puntoVenta['codigoControl'],
         'generado' => $puntoVenta['generado'] ?? '',
         'vigencia' => $puntoVenta['vigencia'] ?? '',
+        'codigoInterno' => $puntoVenta['codigoInterno'] ?? '',
     ];
 }
 
@@ -240,7 +264,8 @@ function guardarCufdSiat(
     string $codigoControl,
     ?string $cuis = null,
     ?string $empresa = null,
-    ?string $vigencia = null
+    ?string $vigencia = null,
+    ?string $codigoInterno = null
 ): void {
     $empresa = $empresa ?? SIAT_EMPRESA_ACTIVA;
     $archivo = __FILE__;
@@ -282,6 +307,15 @@ function guardarCufdSiat(
             $nuevo = preg_replace(
                 "/'vigencia' => '[^']*'/",
                 "'vigencia' => '" . $vigencia . "'",
+                $nuevo,
+                1
+            );
+        }
+        // Solo los PDV que tienen la clave 'codigoInterno' (CUFD V3).
+        if ($codigoInterno !== null && $codigoInterno !== '') {
+            $nuevo = preg_replace(
+                "/'codigoInterno' => '[^']*'/",
+                "'codigoInterno' => '" . $codigoInterno . "'",
                 $nuevo,
                 1
             );
